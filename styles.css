@@ -127,6 +127,24 @@ th {
   gap: 8px;
 }
 
+.transfer-box {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: #fffaf2;
+}
+
+.transfer-box h3 {
+  margin: 0 0 10px;
+  color: var(--primary);
+}
+
+.transfer-box p {
+  margin: 6px 0;
+  color: var(--text);
+}
+
 .form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

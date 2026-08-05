@@ -17,11 +17,12 @@ form.addEventListener('submit', (event) => {
 
   const data = new FormData(form);
   const name = data.get('name')?.toString().trim() || 'Comprador';
+  const seller = data.get('seller')?.toString().trim() || 'No registrado';
   const quantity = document.querySelector('input[name="tickets"]:checked')?.value || '1';
   const amount = data.get('depositAmount')?.toString() || '0';
 
   message.style.display = 'block';
-  message.innerHTML = `Gracias, ${name}. Tu compra de ${quantity} rifa(s) fue registrada. El comprobante por $${Number(amount).toLocaleString('es-ES')} está listo para revisión.`;
+  message.innerHTML = `Gracias, ${name}. Tu compra de ${quantity} rifa(s) fue registrada. El comprobante por $${Number(amount).toLocaleString('es-ES')} está listo para revisión. Vendida por ${seller}.`;
   form.reset();
   updateTotal();
 });
