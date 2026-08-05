@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rifa JMJ Corea 2027</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <section class="hero-card">
+        <div class="hero-top">
+          <img src="content/images.jpeg" alt="Logo de la JMJ" class="hero-logo" />
+          <div>
+            <p class="eyebrow">Apoya la causa</p>
+            <h1>Rifa JMJ Corea 2027</h1>
+          </div>
+        </div>
+        <p class="description">
+          Participa en esta rifa solidaria y ayuda a hacer posible este sueño.
+          Cada boleta tiene la oportunidad de ganar uno de los premios destacados.
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>Premios disponibles</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Premio</th>
+              <th>Detalle</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1er premio</td>
+              <td>Viaje turístico para 2 personas</td>
+            </tr>
+            <tr>
+              <td>2do premio</td>
+              <td>Tablet nueva</td>
+            </tr>
+            <tr>
+              <td>3er premio</td>
+              <td>Kit de viaje premium</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="card">
+        <h2>Selecciona la cantidad de rifas</h2>
+        <div class="ticket-options" id="ticketOptions">
+          <label class="ticket-option">
+            <input type="radio" name="tickets" value="1" />
+            <span>1 rifa</span>
+          </label>
+          <label class="ticket-option">
+            <input type="radio" name="tickets" value="2" />
+            <span>2 rifas</span>
+          </label>
+          <label class="ticket-option">
+            <input type="radio" name="tickets" value="3" />
+            <span>3 rifas</span>
+          </label>
+          <label class="ticket-option">
+            <input type="radio" name="tickets" value="5" checked />
+            <span>5 rifas</span>
+          </label>
+          <label class="ticket-option">
+            <input type="radio" name="tickets" value="10" />
+            <span>10 rifas</span>
+          </label>
+        </div>
+        <div class="summary">
+          <p>Precio por rifa: <strong>$1.000</strong></p>
+          <p>Total estimado: <strong id="totalPrice">$5.000</strong></p>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Datos del comprador</h2>
+        <form id="purchaseForm">
+          <div class="form-grid">
+            <label>
+              Nombre completo
+              <input type="text" name="name" placeholder="Ej. Ana López" required />
+            </label>
+            <label>
+              Correo electrónico
+              <input type="email" name="email" placeholder="tu@email.com" required />
+            </label>
+            <label>
+              Teléfono
+              <input type="tel" name="phone" placeholder="999999999" required />
+            </label>
+            <label>
+              Monto depositado
+              <input type="number" name="depositAmount" min="1000" step="1000" required />
+            </label>
+          </div>
+
+          <label class="upload-box">
+            <span>Subir comprobante de depósito</span>
+            <input type="file" name="proof" accept="image/*,.pdf" required />
+          </label>
+
+          <button type="submit">Enviar compra</button>
+        </form>
+
+        <div id="message" class="message" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
