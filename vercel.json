@@ -3,6 +3,10 @@
   "name": "rifa-app",
   "builds": [
     {
+      "src": "api/**/*.js",
+      "use": "@vercel/node"
+    },
+    {
       "src": "**/*",
       "use": "@vercel/static"
     }
