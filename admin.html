@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin · Rifa JMJ Corea 2027</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <header class="hero-card">
+        <nav class="topbar" aria-label="Navegación principal">
+          <span class="brand-badge">JMJ Corea 2027 · Admin</span>
+          <div class="topbar-links">
+            <a class="cta-link" href="index.html">Volver al sitio</a>
+            <form id="adminBarForm" class="admin-bar" autocomplete="off">
+              <input
+                type="password"
+                id="adminBarPassword"
+                class="admin-bar-input"
+                placeholder="Contraseña admin"
+                aria-label="Contraseña de administrador"
+              />
+              <button type="submit" class="admin-bar-btn" aria-label="Entrar al panel admin">→</button>
+            </form>
+          </div>
+        </nav>
+        <p id="adminBarError" class="admin-bar-error" aria-live="polite"></p>
+
+        <h1>Panel de administración</h1>
+        <p class="description">Confirma las compras recibidas y revisa cómo van las ventas.</p>
+      </header>
+
+      <section class="card" id="adminPanel" hidden>
+        <div class="tabs" role="tablist">
+          <button type="button" class="tab-btn active" data-tab="confirm" role="tab">Confirmar compras</button>
+          <button type="button" class="tab-btn" data-tab="dashboard" role="tab">Dashboard</button>
+        </div>
+
+        <div id="confirmView">
+          <div class="section-heading">
+            <h2>Compras por confirmar <span id="pendingCount" class="tab-count"></span></h2>
+            <button type="button" id="refreshBtn" class="copy-btn">Actualizar</button>
+          </div>
+
+          <div class="table-scroll">
+            <table id="pendingTable">
+              <thead>
+                <tr>
+                  <th>Comprador</th>
+                  <th>Vendedor</th>
+                  <th>Cantidad</th>
+                  <th>Monto</th>
+                  <th>Números</th>
+                  <th>Fecha</th>
+                  <th>Comprobante</th>
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody id="pendingBody"></tbody>
+            </table>
+          </div>
+
+          <p id="pendingEmptyMessage" class="section-subtitle" hidden>No hay compras pendientes por confirmar.</p>
+        </div>
+
+        <div id="dashboardView" hidden>
+          <div class="section-heading">
+            <h2>Cómo van las ventas</h2>
+            <button type="button" id="refreshDashboardBtn" class="copy-btn">Actualizar</button>
+          </div>
+
+          <div class="dash-stats">
+            <div class="dash-stat">
+              <strong id="statTotalPurchases">0</strong>
+              <span>compras totales</span>
+            </div>
+            <div class="dash-stat">
+              <strong id="statTotalCustomers">0</strong>
+              <span>clientes únicos</span>
+            </div>
+            <div class="dash-stat">
+              <strong id="statConfirmedAmount">$0</strong>
+              <span>recaudado confirmado</span>
+            </div>
+            <div class="dash-stat">
+              <strong id="statPendingAmount">$0</strong>
+              <span>pendiente por confirmar</span>
+            </div>
+          </div>
+
+          <h3 class="raffle-numbers-title">Números de rifa asignados</h3>
+          <div class="table-scroll">
+            <table id="raffleNumbersTable">
+              <thead>
+                <tr>
+                  <th>Número</th>
+                  <th>Comprador</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody id="raffleNumbersBody"></tbody>
+            </table>
+          </div>
+
+          <p id="raffleEmptyMessage" class="section-subtitle" hidden>Todavía no se han asignado números de rifa.</p>
+        </div>
+      </section>
+    </main>
+
+    <script src="admin.js"></script>
+  </body>
+</html>

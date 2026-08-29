@@ -8,60 +8,107 @@
   </head>
   <body>
     <main class="container">
-      <section class="hero-card">
+      <header class="hero-card">
+        <nav class="topbar" aria-label="Navegación principal">
+          <span class="brand-badge">JMJ Corea 2027</span>
+          <div class="topbar-links">
+            <a class="cta-link" href="#comprar">Comprar rifas</a>
+            <form id="adminBarForm" class="admin-bar" autocomplete="off">
+              <input
+                type="password"
+                id="adminBarPassword"
+                class="admin-bar-input"
+                placeholder="Contraseña admin"
+                aria-label="Contraseña de administrador"
+              />
+              <button type="submit" class="admin-bar-btn" aria-label="Entrar al panel admin">→</button>
+            </form>
+          </div>
+        </nav>
+        <p id="adminBarError" class="admin-bar-error" aria-live="polite"></p>
+
         <div class="hero-top">
-          <img src="content/images.jpeg" alt="Logo de la JMJ" class="hero-logo" />
+          <img class="hero-logo" src="content/images.jpeg" alt="Logo JMJ Seúl 2027" />
           <div>
             <p class="eyebrow">Parroquia San Pedro de Las Condes</p>
-            <h1>Rifa JMJ Corea 2027</h1>
+            <h1>Rifa para la Jornada Mundial de la Juventud</h1>
+            <div class="accent-bar"></div>
           </div>
         </div>
+
         <p class="description">
-          Participa en esta rifa solidaria y ayuda a hacer posible este sueño.
-          Cada boleta tiene la oportunidad de ganar uno de los premios destacados.
+          Ayudanos a recaudar fondos para que los jóvenes de la parroquia puedan asistir a la peregrinación
         </p>
+
+        <div class="hero-stats" aria-label="Estadísticas de la rifa">
+          <div class="stat">
+            <strong>Noviembre 2026</strong>
+            <span>fecha estimada del sorteo</span>
+          </div>
+          <div class="stat">
+            <strong>$2.500</strong>
+            <span>por rifa</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="card" id="premios">
+        <div class="section-heading">
+          <h2>Premios disponibles</h2>
+        </div>
+
+        <div class="prize-grid">
+          <div class="prize-card prize-card-gold">
+            <span class="prize-medal">🥇</span>
+            <span class="prize-rank">1er premio</span>
+            <p class="prize-name">iPad 11 Wi‑Fi 128GB</p>
+          </div>
+          <div class="prize-card prize-card-silver">
+            <span class="prize-medal">🥈</span>
+            <span class="prize-rank">2do premio</span>
+            <p class="prize-name">Apple AirPods 4</p>
+          </div>
+          <div class="prize-card prize-card-bronze">
+            <span class="prize-medal">🥉</span>
+            <span class="prize-rank">3er premio</span>
+            <p class="prize-name">Okwu Fundamental Brushes Collection</p>
+          </div>
+          <div class="prize-card">
+            <span class="prize-medal">🍷</span>
+            <span class="prize-rank">4to premio</span>
+            <p class="prize-name">Vino premium</p>
+          </div>
+          <div class="prize-card">
+            <span class="prize-medal">🍽️</span>
+            <span class="prize-rank">5to premio</span>
+            <p class="prize-name">Momento Gourmet para 2</p>
+          </div>
+          <div class="prize-card">
+            <span class="prize-medal">🎁</span>
+            <span class="prize-rank">6to premio</span>
+            <p class="prize-name">Gift Card Retail x $60.000</p>
+          </div>
+        </div>
       </section>
 
-      <section class="card">
-        <h2>Premios disponibles</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Premio</th>
-              <th>Detalle</th>
-            </tr>
-          </thead>
-              <tbody>
-            <tr>
-              <td>1er premio</td>
-              <td>iPad 11 Wi‑Fi 128GB</td>
-            </tr>
-            <tr>
-              <td>2do premio</td>
-              <td>Apple AirPods 4</td>
-            </tr>
-            <tr>
-              <td>3er premio</td>
-              <td>Okwu Fundamental Brushes Collection</td>
-            </tr>
-            <tr>
-              <td>4to premio</td>
-              <td>Vino premium</td>
-            </tr>
-            <tr>
-              <td>5to premio</td>
-              <td>Momento Gourmet para 2</td>
-            </tr>
-            <tr>
-              <td>6to premio</td>
-              <td>Gift Card Retail x $60.000</td>
-            </tr>
-          </tbody>
-        </table>
+      <section class="card info-grid">
+        <h2 class="how-title">Forma de participar</h2>
+        <div class="info-item">
+          <span class="info-number">1</span>
+          <span class="info-icon">💳</span>
+          <h3>Realiza tu pago</h3>
+          <p>Transfiere el monto exacto o paga en línea con el link de Mercado Pago.</p>
+        </div>
+        <div class="info-item">
+          <span class="info-number">2</span>
+          <span class="info-icon">📝</span>
+          <h3>Confirma tu participación</h3>
+          <p>Ingresa tus datos junto al comprobante o monto pagado para confirmar tu rifa.</p>
+        </div>
       </section>
 
-      <section class="card">
-        <h2>Selecciona la cantidad de rifas</h2>
+      <section class="card" id="comprar">
+        <h2>Elige la cantidad de rifas</h2>
         <div class="ticket-options" id="ticketOptions">
           <label class="ticket-option">
             <input type="radio" name="tickets" value="1" />
@@ -84,23 +131,58 @@
             <span>10 rifas</span>
           </label>
         </div>
-        <div class="summary">
-          <p>Precio por rifa: <strong>$1.000</strong></p>
-          <p>Total estimado: <strong id="totalPrice">$5.000</strong></p>
-        </div>
 
-        <div class="transfer-box">
-          <h3>Datos para transferencia</h3>
-          <p><strong>Nombre:</strong> Jorge Ayala Marfil</p>
-          <p><strong>RUT:</strong> 5.868.327-2</p>
-          <p><strong>Cuenta corriente:</strong> 15782935</p>
-          <p><strong>Banco:</strong> BICE</p>
-          <p><strong>Correo:</strong> por definir</p>
+        <div class="summary">
+          <p>Precio por rifa: <strong>$2.500</strong></p>
+          <p>Total a pagar: <strong id="totalPrice">$12.500</strong></p>
         </div>
       </section>
 
-      <section class="card">
-        <h2>Datos del comprador</h2>
+      <section class="card" id="pago">
+        <h2>Realiza tu pago</h2>
+        <div class="payment-options">
+          <div class="payment-option" id="transferencia">
+            <h3 class="option-title option-title-primary"><span class="option-icon">🏦</span> Opción 1 · Transferencia bancaria</h3>
+            <p class="payment-amount-hint">
+              Transfiere <strong id="transferAmount">$12.500</strong> a la siguiente cuenta:
+            </p>
+            <div class="transfer-box">
+              <p><strong>Nombre:</strong> <span data-copy-field>Jorge Ayala Marfil</span></p>
+              <p><strong>RUT:</strong> <span data-copy-field>5.868.327-2</span></p>
+              <p><strong>Cuenta corriente:</strong> <span data-copy-field>15782935</span></p>
+              <p><strong>Banco:</strong> <span data-copy-field>BICE</span></p>
+              <p><strong>Correo:</strong> <span data-copy-field>por definir</span></p>
+
+              <div class="copy-row">
+                <button type="button" id="copyTransferBtn" class="copy-btn">Copiar datos</button>
+                <span id="copyFeedback" class="copy-feedback" aria-live="polite"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="payment-option" id="mercadopago">
+            <h3 class="option-title option-title-secondary"><span class="option-icon">💠</span> Opción 2 · Mercado Pago</h3>
+            <p class="payment-amount-hint">
+              Paga <strong id="mpAmount">$12.500</strong> con el siguiente link seguro de Mercado Pago:
+            </p>
+            <a
+              class="mp-btn"
+              href="https://link.mercadopago.cl/jmjkoreasanpedro"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Pagar con Mercado Pago
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" id="formulario">
+        <h2>Paso 2 · Confirma tu participación</h2>
+        <p class="section-subtitle">
+          Una vez realizado tu pago (opción 1 o 2), completa este formulario con tus
+          datos y el monto pagado para confirmar tu participación.
+        </p>
         <form id="purchaseForm">
           <div class="form-grid">
             <label>
@@ -119,21 +201,47 @@
               Vendida por
               <input type="text" name="seller" placeholder="Ej. María Pérez" required />
             </label>
-            <label>
+            <label class="full-width">
               Monto depositado
-              <input type="number" name="depositAmount" min="1000" step="1000" required />
+              <input id="depositAmount" type="number" name="depositAmount" min="2500" step="2500" required />
+              <small id="depositHint">Monto sugerido: $12.500. Debe coincidir con el total elegido.</small>
+            </label>
+            <label class="full-width">
+              Comprobante de pago
+              <input
+                id="proofFile"
+                type="file"
+                name="proofFile"
+                accept="image/*,.pdf"
+                required
+              />
+              <small id="proofHint">Sube una foto o captura de tu comprobante de transferencia o pago (máx. 4MB).</small>
             </label>
           </div>
-
-          <label class="upload-box">
-            <span>Subir comprobante de depósito</span>
-            <input type="file" name="proof" accept="image/*,.pdf" required />
-          </label>
 
           <button type="submit">Enviar compra</button>
         </form>
 
         <div id="message" class="message" aria-live="polite"></div>
+      </section>
+
+      <section class="card faq-section">
+        <h2>Preguntas frecuentes</h2>
+
+        <div class="faq-list">
+          <div class="faq-item">
+            <h3>¿Cuándo se realiza el sorteo?</h3>
+            <p>El sorteo se realizará en una fecha que se comunicará oficialmente a los participantes.</p>
+          </div>
+          <div class="faq-item">
+            <h3>¿Puedo comprar más de una rifa?</h3>
+            <p>Claro, puedes elegir la cantidad que quieras y el monto se calculará automáticamente.</p>
+          </div>
+          <div class="faq-item">
+            <h3>¿Cómo se confirma la participación?</h3>
+            <p>La compra se revisará manualmente para confirmar el pago asociado a la participación.</p>
+          </div>
+        </div>
       </section>
     </main>
 

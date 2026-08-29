@@ -1,0 +1,12 @@
+node_modules/
+.vercel/
+.env
+.env.*
+npm-debug.log*
+.vercel
+.env*
+
+.claude/
+.agents/
+.windsurf/
+skills-lock.json

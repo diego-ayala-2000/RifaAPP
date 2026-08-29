@@ -1,14 +1,4 @@
 {
   "version": 2,
-  "name": "rifa-app",
-  "builds": [
-    {
-      "src": "api/**/*.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "**/*",
-      "use": "@vercel/static"
-    }
-  ]
+  "name": "rifa-app"
 }

@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Customer {
+  id           Int           @id @default(autoincrement())
+  name         String
+  email        String
+  phone        String
+  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  transactions Transaction[]
+
+  @@map("customers")
+}
+
+model Vendor {
+  id           Int           @id @default(autoincrement())
+  name         String        @unique
+  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  transactions Transaction[]
+
+  @@map("vendors")
+}
+
+model Transaction {
+  id            Int            @id @default(autoincrement())
+  customerId    Int            @map("customer_id")
+  vendorId      Int            @map("vendor_id")
+  quantity      Int
+  amount        Decimal        @db.Decimal(12, 2)
+  status        String         @default("pending")
+  proofUrl      String?        @map("proof_url")
+  proofName     String?        @map("proof_name")
+  proofType     String?        @map("proof_type")
+  submittedAt   DateTime       @default(now()) @map("submitted_at") @db.Timestamptz(6)
+  customer      Customer       @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  vendor        Vendor         @relation(fields: [vendorId], references: [id], onDelete: Restrict)
+  raffleNumbers RaffleNumber[]
+
+  @@index([customerId], map: "transactions_customer_id_idx")
+  @@index([vendorId], map: "transactions_vendor_id_idx")
+  @@map("transactions")
+}
+
+model RaffleNumber {
+  id            Int         @id @default(autoincrement())
+  number        Int         @unique @default(autoincrement())
+  transactionId Int         @map("transaction_id")
+  status        String      @default("reserved")
+  soldAt        DateTime?   @map("sold_at") @db.Timestamptz(6)
+  transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+
+  @@index([transactionId], map: "raffle_numbers_transaction_id_idx")
+  @@map("raffle_numbers")
+}
