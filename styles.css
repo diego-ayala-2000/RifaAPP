@@ -518,6 +518,21 @@ h1 {
   box-shadow: none;
 }
 
+.ticket-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.wa-share-btn {
+  background: #25d366;
+  box-shadow: 0 8px 18px rgba(37, 211, 102, 0.22);
+}
+
+.wa-share-btn:hover {
+  background: #1ebe59;
+}
+
 
 .prize-note {
   margin: 18px 0 0;
@@ -1076,12 +1091,15 @@ button:hover {
   align-items: center;
   justify-content: center;
   text-decoration: none;
+  border: none;
   border-radius: 12px;
   background: #25d366;
   color: white;
   padding: 11px 20px;
   font-size: 0.98rem;
+  font-family: inherit;
   font-weight: 800;
+  cursor: pointer;
   box-shadow: 0 8px 20px rgba(37, 211, 102, 0.28);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }

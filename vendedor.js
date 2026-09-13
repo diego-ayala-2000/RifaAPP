@@ -29,6 +29,7 @@ const proofFileInput = document.getElementById('proofFile');
 const resultPanel = document.getElementById('resultPanel');
 const assignedNumbers = document.getElementById('assignedNumbers');
 const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+const shareTicketBtn = document.getElementById('shareTicketBtn');
 const copyMessageFeedback = document.getElementById('copyMessageFeedback');
 const newSaleBtn = document.getElementById('newSaleBtn');
 
@@ -280,9 +281,39 @@ function buildTicketPdf({ name, email, phone, seller, quantity, amount, numbers,
   return doc;
 }
 
+function ticketFilename(name) {
+  return `ticket-rifa-${String(name || 'comprador').replace(/\s+/g, '_').toLowerCase()}.pdf`;
+}
+
 function downloadTicket(doc, name) {
-  const filename = `ticket-rifa-${String(name || 'comprador').replace(/\s+/g, '_').toLowerCase()}.pdf`;
-  doc.save(filename);
+  doc.save(ticketFilename(name));
+}
+
+// Comparte el PDF con el selector nativo del sistema (el vendedor elige WhatsApp u
+// otra app). Si el navegador no soporta compartir archivos (la mayoría de escritorio),
+// se descarga el PDF para adjuntarlo manualmente.
+async function shareTicket(doc, name) {
+  const filename = ticketFilename(name);
+  const blob = doc.output('blob');
+  const file = new File([blob], filename, { type: 'application/pdf' });
+
+  const canShareFile = navigator.canShare && navigator.canShare({ files: [file] });
+
+  if (navigator.share && canShareFile) {
+    try {
+      await navigator.share({
+        files: [file],
+        title: 'Ticket de compra',
+        text: '¡Aquí tienes tu ticket de compra de la rifa! 🎟️'
+      });
+      return true;
+    } catch (error) {
+      if (error?.name === 'AbortError') return false;
+    }
+  }
+
+  downloadTicket(doc, name);
+  return false;
 }
 
 function showResult({ name, email, phone, quantity, amount, numbers, history }) {
@@ -325,7 +356,10 @@ function renderSummary(summary) {
       <td>${statusPill(row.status)}</td>
       <td>${formatDate(row.submittedAt)}</td>
       <td>${row.proofUrl ? `<button type="button" class="copy-btn view-proof-btn" data-url="${escapeHtml(row.proofUrl)}">Ver foto</button>` : '—'}</td>
-      <td><button type="button" class="copy-btn ticket-btn" data-id="${row.id}">📄 Ticket</button></td>
+      <td class="ticket-actions">
+        <button type="button" class="copy-btn ticket-btn" data-id="${row.id}">📄 Ticket</button>
+        <button type="button" class="copy-btn wa-share-btn" data-id="${row.id}">📲 WhatsApp</button>
+      </td>
     </tr>
   `).join('');
 
@@ -334,41 +368,51 @@ function renderSummary(summary) {
   });
 
   salesBody.querySelectorAll('.ticket-btn').forEach((btn) => {
-    btn.addEventListener('click', () => downloadTicketForSale(btn.dataset.id, btn));
+    btn.addEventListener('click', () => withTicketDoc(btn.dataset.id, btn, downloadTicket));
+  });
+
+  salesBody.querySelectorAll('.wa-share-btn').forEach((btn) => {
+    btn.addEventListener('click', () => withTicketDoc(btn.dataset.id, btn, shareTicket));
   });
 
   salesEmptyMessage.hidden = rows.length !== 0;
 }
 
-async function downloadTicketForSale(transactionId, button) {
+async function fetchTicketDoc(transactionId) {
+  const response = await fetch(`/api/seller/ticket?id=${encodeURIComponent(transactionId)}`, {
+    headers: { 'x-seller-token': SELLER_TOKEN }
+  });
+
+  const result = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    throw new Error(result.error || 'No se pudo generar el ticket.');
+  }
+
+  const { transaction, history } = result;
+  const doc = buildTicketPdf({
+    name: transaction.name,
+    email: transaction.email,
+    phone: transaction.phone,
+    seller: transaction.seller,
+    quantity: transaction.quantity,
+    amount: transaction.amount,
+    numbers: transaction.numbers,
+    submittedAt: transaction.submittedAt,
+    history
+  });
+
+  return { doc, name: transaction.name };
+}
+
+async function withTicketDoc(transactionId, button, action) {
   const originalText = button.textContent;
   button.disabled = true;
   button.textContent = 'Generando...';
 
   try {
-    const response = await fetch(`/api/seller/ticket?id=${encodeURIComponent(transactionId)}`, {
-      headers: { 'x-seller-token': SELLER_TOKEN }
-    });
-
-    const result = await response.json().catch(() => ({}));
-
-    if (!response.ok) {
-      throw new Error(result.error || 'No se pudo generar el ticket.');
-    }
-
-    const { transaction, history } = result;
-    const doc = buildTicketPdf({
-      name: transaction.name,
-      email: transaction.email,
-      phone: transaction.phone,
-      seller: transaction.seller,
-      quantity: transaction.quantity,
-      amount: transaction.amount,
-      numbers: transaction.numbers,
-      submittedAt: transaction.submittedAt,
-      history
-    });
-    downloadTicket(doc, transaction.name);
+    const { doc, name } = await fetchTicketDoc(transactionId);
+    await action(doc, name);
   } catch (error) {
     window.alert(error.message);
   } finally {
@@ -528,6 +572,23 @@ if (downloadPdfBtn) {
       copyMessageFeedback.textContent = '¡Ticket descargado!';
     } catch (error) {
       copyMessageFeedback.textContent = 'No se pudo generar el PDF.';
+    }
+
+    setTimeout(() => {
+      copyMessageFeedback.textContent = '';
+    }, 3000);
+  });
+}
+
+if (shareTicketBtn) {
+  shareTicketBtn.addEventListener('click', async () => {
+    if (!currentReceipt) return;
+
+    try {
+      const shared = await shareTicket(currentReceipt.doc, currentReceipt.name);
+      copyMessageFeedback.textContent = shared ? '¡Ticket compartido!' : '¡Ticket descargado! Adjúntalo en WhatsApp.';
+    } catch (error) {
+      copyMessageFeedback.textContent = 'No se pudo compartir el PDF.';
     }
 
     setTimeout(() => {
