@@ -1,6 +1,6 @@
 const PRICE_PER_TICKET = 2000;
 const MAX_PROOF_SIZE = 4 * 1024 * 1024;
-const RAFFLE_NAME = 'Rifa JMJ Corea 2027 · Parroquia San Pedro de Las Condes';
+const RAFFLE_NAME = 'Rifa JMJ Corea 2027 · Camino Neocatecumenal Parroquia San Pedro de las Condes';
 
 // Cada vendedor tiene su enlace personal con su token: vendedor.html?t=TOKEN
 const SELLER_TOKEN =
@@ -163,12 +163,16 @@ function buildTicketPdf({ name, email, phone, seller, quantity, amount, numbers,
   }
 
   function center(text, size, style = 'normal') {
-    ensureSpace();
     doc.setFont('helvetica', style);
     doc.setFontSize(size);
     doc.setTextColor(0);
-    doc.text(text, pageWidth / 2, y, { align: 'center', maxWidth: contentWidth });
-    y += size * 0.42;
+    const lines = doc.splitTextToSize(text, contentWidth);
+    const lineHeight = size * 0.42;
+    ensureSpace(lines.length, lineHeight);
+    lines.forEach((line) => {
+      doc.text(line, pageWidth / 2, y, { align: 'center' });
+      y += lineHeight;
+    });
   }
 
   function dashedLine() {
