@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
     <title>Admin · Rifa JMJ Corea 2027</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
@@ -13,28 +14,26 @@
           <span class="brand-badge">JMJ Corea 2027 · Admin</span>
           <div class="topbar-links">
             <a class="cta-link" href="index.html">Volver al sitio</a>
-            <form id="adminBarForm" class="admin-bar" autocomplete="off">
-              <input
-                type="password"
-                id="adminBarPassword"
-                class="admin-bar-input"
-                placeholder="Contraseña admin"
-                aria-label="Contraseña de administrador"
-              />
-              <button type="submit" class="admin-bar-btn" aria-label="Entrar al panel admin">→</button>
-            </form>
           </div>
         </nav>
-        <p id="adminBarError" class="admin-bar-error" aria-live="polite"></p>
 
         <h1>Panel de administración</h1>
-        <p class="description">Confirma las compras recibidas y revisa cómo van las ventas.</p>
+        <p class="description">Confirma las compras recibidas y revisa el estado de la rifa.</p>
       </header>
+
+      <section class="card" id="accessDenied" hidden>
+        <h2>Enlace no válido</h2>
+        <p class="section-subtitle">
+          Este enlace de administración no es válido o está incompleto. Usa el enlace
+          completo con la clave de acceso.
+        </p>
+      </section>
 
       <section class="card" id="adminPanel" hidden>
         <div class="tabs" role="tablist">
           <button type="button" class="tab-btn active" data-tab="confirm" role="tab">Confirmar compras</button>
-          <button type="button" class="tab-btn" data-tab="dashboard" role="tab">Dashboard</button>
+          <button type="button" class="tab-btn" data-tab="dashboard" role="tab">Dashboards</button>
+          <button type="button" class="tab-btn" data-tab="register" role="tab">Registrar venta</button>
         </div>
 
         <div id="confirmView">
@@ -66,18 +65,38 @@
 
         <div id="dashboardView" hidden>
           <div class="section-heading">
-            <h2>Cómo van las ventas</h2>
+            <h2>Estado general</h2>
             <button type="button" id="refreshDashboardBtn" class="copy-btn">Actualizar</button>
           </div>
 
           <div class="dash-stats">
             <div class="dash-stat">
-              <strong id="statTotalPurchases">0</strong>
-              <span>compras totales</span>
+              <strong id="statNumbers">0</strong>
+              <span>números asignados</span>
             </div>
             <div class="dash-stat">
-              <strong id="statTotalCustomers">0</strong>
-              <span>clientes únicos</span>
+              <strong id="statReserved">0</strong>
+              <span>reservados (pendientes)</span>
+            </div>
+            <div class="dash-stat">
+              <strong id="statSold">0</strong>
+              <span>vendidos (confirmados)</span>
+            </div>
+            <div class="dash-stat">
+              <strong id="statTransactions">0</strong>
+              <span>transacciones</span>
+            </div>
+            <div class="dash-stat">
+              <strong id="statPending">0</strong>
+              <span>transacciones pendientes</span>
+            </div>
+            <div class="dash-stat">
+              <strong id="statCustomers">0</strong>
+              <span>clientes</span>
+            </div>
+            <div class="dash-stat">
+              <strong id="statVendors">0</strong>
+              <span>vendedores</span>
             </div>
             <div class="dash-stat">
               <strong id="statConfirmedAmount">$0</strong>
@@ -89,21 +108,205 @@
             </div>
           </div>
 
-          <h3 class="raffle-numbers-title">Números de rifa asignados</h3>
-          <div class="table-scroll">
-            <table id="raffleNumbersTable">
-              <thead>
-                <tr>
-                  <th>Número</th>
-                  <th>Comprador</th>
-                  <th>Estado</th>
-                </tr>
-              </thead>
-              <tbody id="raffleNumbersBody"></tbody>
-            </table>
+          <div id="integrityAlerts" class="alert-box" hidden></div>
+
+          <div class="tabs subtabs" role="tablist">
+            <button type="button" class="tab-btn active" data-subtab="numbers" role="tab">Asignación de números</button>
+            <button type="button" class="tab-btn" data-subtab="transactions" role="tab">Transacciones</button>
+            <button type="button" class="tab-btn" data-subtab="vendors" role="tab">Vendedores</button>
+            <button type="button" class="tab-btn" data-subtab="customers" role="tab">Clientes</button>
           </div>
 
-          <p id="raffleEmptyMessage" class="section-subtitle" hidden>Todavía no se han asignado números de rifa.</p>
+          <div id="numbersView">
+            <div class="section-heading">
+              <h3>Asignación de números <span id="numbersCount" class="tab-count"></span></h3>
+              <div class="heading-actions">
+                <input type="search" id="numbersFilter" class="filter-input" placeholder="Filtrar por número, comprador o vendedor" />
+                <button type="button" id="downloadNumbersBtn" class="copy-btn">Descargar planilla</button>
+              </div>
+            </div>
+            <div class="table-scroll">
+              <table id="numbersTable">
+                <thead>
+                  <tr>
+                    <th>N°</th>
+                    <th>Comprador</th>
+                    <th>Vendedor</th>
+                    <th>Estado</th>
+                    <th>Transacción</th>
+                    <th>Confirmado</th>
+                  </tr>
+                </thead>
+                <tbody id="numbersBody"></tbody>
+              </table>
+            </div>
+            <p id="numbersEmptyMessage" class="section-subtitle" hidden>Todavía no se han asignado números.</p>
+          </div>
+
+          <div id="transactionsView" hidden>
+            <div class="section-heading">
+              <h3>Transacciones <span id="transactionsCount" class="tab-count"></span></h3>
+            </div>
+            <div class="table-scroll">
+              <table id="transactionsTable">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Comprador</th>
+                    <th>Vendedor</th>
+                    <th>Cantidad</th>
+                    <th>N° asignados</th>
+                    <th>Monto</th>
+                    <th>Estado</th>
+                    <th>Fecha</th>
+                    <th>Comprobante</th>
+                  </tr>
+                </thead>
+                <tbody id="transactionsBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div id="vendorsView" hidden>
+            <div class="section-heading">
+              <h3>Vendedores <span id="vendorsCount" class="tab-count"></span></h3>
+              <button type="button" id="refreshSellersBtn" class="copy-btn">Actualizar</button>
+            </div>
+
+            <form id="createSellerForm" class="create-seller">
+              <input type="text" id="newSellerName" placeholder="Nombre del nuevo vendedor" autocomplete="off" required />
+              <button type="submit">Crear vendedor</button>
+            </form>
+            <div id="createSellerMsg" class="message" aria-live="polite"></div>
+
+            <div class="table-scroll">
+              <table id="vendorsTable">
+                <thead>
+                  <tr>
+                    <th>Vendedor</th>
+                    <th>Enlace personal</th>
+                    <th>Ventas</th>
+                    <th>Rifas</th>
+                    <th>Monto</th>
+                    <th>Confirmado</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="vendorsBody"></tbody>
+              </table>
+            </div>
+            <p id="vendorsEmptyMessage" class="section-subtitle" hidden>Aún no hay vendedores. Crea el primero arriba.</p>
+          </div>
+
+          <div id="customersView" hidden>
+            <div class="section-heading">
+              <h3>Clientes <span id="customersCount" class="tab-count"></span></h3>
+            </div>
+            <div class="table-scroll">
+              <table id="customersTable">
+                <thead>
+                  <tr>
+                    <th>Cliente</th>
+                    <th>Correo</th>
+                    <th>Teléfono</th>
+                    <th>Transacciones</th>
+                    <th>Rifas</th>
+                    <th>Monto</th>
+                    <th>Monto confirmado</th>
+                  </tr>
+                </thead>
+                <tbody id="customersBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div id="registerView" hidden>
+          <div class="section-heading">
+            <h2>Registrar venta por un vendedor</h2>
+          </div>
+          <p class="section-subtitle">
+            Usa esto si un vendedor no puede registrar su venta. Elige el vendedor y
+            carga todos los datos del comprador y el comprobante. Queda como
+            <strong>pendiente</strong> igual que cualquier venta.
+          </p>
+
+          <form id="regForm">
+            <div class="form-grid">
+              <label>
+                Vendedor
+                <select id="regSeller" name="sellerId" required>
+                  <option value="" disabled selected>Selecciona un vendedor</option>
+                </select>
+              </label>
+              <label>
+                Nombre del comprador
+                <input type="text" id="regName" name="name" placeholder="Ej. Ana López" required />
+              </label>
+              <label>
+                Correo del comprador
+                <input type="email" id="regEmail" name="email" placeholder="comprador@email.com" required />
+              </label>
+              <label>
+                Teléfono / WhatsApp del comprador
+                <input type="tel" id="regPhone" name="phone" inputmode="numeric" placeholder="912345678" required />
+                <small><strong>9 dígitos</strong>, sin el +56. Cada cliente queda ligado a su teléfono.</small>
+              </label>
+            </div>
+
+            <h3 class="raffle-numbers-title">Cantidad de rifas</h3>
+            <div class="ticket-options" id="regTicketOptions">
+              <label class="ticket-option"><input type="radio" name="regTickets" value="1" /><span>1 rifa</span></label>
+              <label class="ticket-option"><input type="radio" name="regTickets" value="2" /><span>2 rifas</span></label>
+              <label class="ticket-option"><input type="radio" name="regTickets" value="3" /><span>3 rifas</span></label>
+              <label class="ticket-option"><input type="radio" name="regTickets" value="5" checked /><span>5 rifas</span></label>
+              <label class="ticket-option"><input type="radio" name="regTickets" value="10" /><span>10 rifas</span></label>
+              <label class="ticket-option"><input type="radio" name="regTickets" value="20" /><span>20 rifas</span></label>
+            </div>
+            <label class="ticket-custom">
+              <span>O ingresa una cantidad exacta</span>
+              <input type="number" id="regCustomQty" name="regCustomQty" min="1" max="1000" step="1" inputmode="numeric" placeholder="Ej. 7" />
+            </label>
+
+            <div class="summary">
+              <p>Precio por rifa: <strong>$2.000</strong></p>
+              <p>Total de la venta: <strong id="regTotalPrice">$10.000</strong></p>
+            </div>
+
+            <div class="form-grid">
+              <label class="full-width">
+                Monto pagado por el comprador
+                <input id="regDepositAmount" type="number" name="depositAmount" min="2000" step="2000" readonly tabindex="-1" required />
+                <small id="regDepositHint">Se calcula automáticamente según la cantidad de rifas.</small>
+              </label>
+              <label class="full-width">
+                Comprobante de pago
+                <input id="regProofFile" type="file" name="proofFile" accept="image/*,.pdf" required />
+                <small>Foto o PDF del comprobante (máx. 4MB).</small>
+              </label>
+            </div>
+
+            <button type="submit">Registrar venta</button>
+          </form>
+
+          <div id="regMessage" class="message" aria-live="polite"></div>
+
+          <div id="regResultPanel" class="result-panel" hidden>
+            <h3>✅ Venta registrada</h3>
+            <p>Números asignados al comprador:</p>
+            <p class="assigned-numbers" id="regAssignedNumbers"></p>
+
+            <p>Mensaje listo para reenviar por WhatsApp:</p>
+            <textarea id="regWaMessage" class="wa-message" readonly></textarea>
+
+            <div class="result-actions">
+              <button type="button" id="regCopyMessageBtn" class="copy-btn">Copiar mensaje</button>
+              <a id="regWaLink" class="wa-btn" href="#" target="_blank" rel="noopener noreferrer">Abrir WhatsApp</a>
+              <span id="regCopyFeedback" class="copy-feedback" aria-live="polite"></span>
+            </div>
+
+            <button type="button" id="regNewSaleBtn">Registrar otra venta</button>
+          </div>
         </div>
       </section>
     </main>

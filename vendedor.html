@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Vendedores · Rifa JMJ Corea 2027</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <header class="hero-card">
+        <nav class="topbar" aria-label="Navegación principal">
+          <span class="brand-badge">JMJ Corea 2027 · Vendedores</span>
+          <div class="topbar-links">
+            <a class="cta-link" href="index.html">Volver al sitio</a>
+          </div>
+        </nav>
+
+        <div class="hero-top">
+          <img class="hero-logo" src="content/images.jpeg" alt="Logo JMJ Seúl 2027" />
+          <div>
+            <p class="eyebrow">Parroquia San Pedro de Las Condes</p>
+            <h1 id="sellerGreeting">Registro de ventas</h1>
+            <div class="accent-bar"></div>
+          </div>
+        </div>
+
+        <p class="description">
+          Registra aquí cada rifa que vendas. Al hacerlo obtendrás un ticket en PDF listo
+          para enviar al comprador con sus números asignados.
+        </p>
+      </header>
+
+      <section class="card" id="accessDenied" hidden>
+        <h2>Enlace no válido</h2>
+        <p class="section-subtitle">
+          Este enlace de vendedor no es válido o está incompleto. Pide al coordinador
+          de la rifa tu enlace personal para registrar ventas.
+        </p>
+      </section>
+
+      <section class="card" id="sellerPanel" hidden>
+        <div class="tabs" role="tablist">
+          <button type="button" class="tab-btn active" data-tab="register" role="tab">Registrar venta</button>
+          <button type="button" class="tab-btn" data-tab="sales" role="tab">Mis ventas</button>
+        </div>
+
+        <div id="registerView">
+          <h2>Registrar una venta</h2>
+          <p class="section-subtitle">
+            Vendedor: <strong id="sellerNameLabel">—</strong>. Completa los datos del
+            comprador y adjunta el comprobante que te envió. Se registrará como
+            <strong>pendiente</strong> hasta que el equipo verifique el pago.
+          </p>
+
+          <form id="sellForm">
+            <div class="form-grid">
+              <label>
+                Nombre del comprador
+                <input type="text" name="name" placeholder="Ej. Ana López" required />
+              </label>
+              <label>
+                Correo del comprador
+                <input type="email" name="email" placeholder="comprador@email.com" required />
+              </label>
+              <label class="full-width">
+                Teléfono / WhatsApp del comprador
+                <input type="tel" name="phone" inputmode="numeric" placeholder="912345678" required />
+                <small><strong>9 dígitos</strong>, sin el +56 (ej. 912345678). Cada cliente queda ligado a su número de teléfono: si ya compró antes con este mismo número, la venta se suma a su historial y no se crea un cliente nuevo.</small>
+              </label>
+            </div>
+
+            <h3 class="raffle-numbers-title">Cantidad de rifas</h3>
+            <div class="ticket-options" id="ticketOptions">
+              <label class="ticket-option">
+                <input type="radio" name="tickets" value="1" />
+                <span>1 rifa</span>
+              </label>
+              <label class="ticket-option">
+                <input type="radio" name="tickets" value="2" />
+                <span>2 rifas</span>
+              </label>
+              <label class="ticket-option">
+                <input type="radio" name="tickets" value="3" />
+                <span>3 rifas</span>
+              </label>
+              <label class="ticket-option">
+                <input type="radio" name="tickets" value="5" checked />
+                <span>5 rifas</span>
+              </label>
+              <label class="ticket-option">
+                <input type="radio" name="tickets" value="10" />
+                <span>10 rifas</span>
+              </label>
+              <label class="ticket-option">
+                <input type="radio" name="tickets" value="20" />
+                <span>20 rifas</span>
+              </label>
+            </div>
+
+            <label class="ticket-custom">
+              <span>O ingresa una cantidad exacta</span>
+              <input type="number" id="customQty" name="customQty" min="1" max="1000" step="1" inputmode="numeric" placeholder="Ej. 7" />
+            </label>
+
+            <div class="summary">
+              <p>Precio por rifa: <strong>$2.000</strong></p>
+              <p>Total de la venta: <strong id="totalPrice">$10.000</strong></p>
+            </div>
+
+            <div class="form-grid">
+              <label class="full-width">
+                Monto pagado por el comprador
+                <input id="depositAmount" type="number" name="depositAmount" min="2000" step="2000" readonly tabindex="-1" required />
+                <small id="depositHint">Se calcula automáticamente según la cantidad de rifas.</small>
+              </label>
+              <label class="full-width">
+                Comprobante de pago
+                <input
+                  id="proofFile"
+                  type="file"
+                  name="proofFile"
+                  accept="image/*,.pdf"
+                  required
+                />
+                <small id="proofHint">Sube la foto o PDF del comprobante que te envió el comprador (máx. 4MB).</small>
+              </label>
+            </div>
+
+            <button type="submit">Registrar venta</button>
+          </form>
+
+          <div id="message" class="message" aria-live="polite"></div>
+
+          <div id="resultPanel" class="result-panel" hidden>
+            <h3>✅ Venta registrada</h3>
+            <p>Números asignados al comprador:</p>
+            <p class="assigned-numbers" id="assignedNumbers"></p>
+
+            <p>Descarga el ticket en PDF con el detalle de esta compra y el historial del comprador, y envíaselo por WhatsApp u otro medio:</p>
+
+            <div class="result-actions">
+              <button type="button" id="downloadPdfBtn" class="copy-btn">📄 Descargar ticket (PDF)</button>
+              <span id="copyMessageFeedback" class="copy-feedback" aria-live="polite"></span>
+            </div>
+
+            <button type="button" id="newSaleBtn">Registrar otra venta</button>
+          </div>
+        </div>
+
+        <div id="salesView" hidden>
+          <div class="section-heading">
+            <h2>Mis ventas <span id="salesCount" class="tab-count"></span></h2>
+            <button type="button" id="refreshSalesBtn" class="copy-btn">Actualizar</button>
+          </div>
+
+          <div class="dash-stats">
+            <div class="dash-stat">
+              <strong id="statSales">0</strong>
+              <span>ventas registradas</span>
+            </div>
+            <div class="dash-stat">
+              <strong id="statRifas">0</strong>
+              <span>rifas vendidas</span>
+            </div>
+            <div class="dash-stat">
+              <strong id="statPending">0</strong>
+              <span>ventas por confirmar</span>
+            </div>
+            <div class="dash-stat">
+              <strong id="statAmount">$0</strong>
+              <span>total recaudado</span>
+            </div>
+            <div class="dash-stat">
+              <strong id="statAmountApproved">$0</strong>
+              <span>confirmado</span>
+            </div>
+          </div>
+
+          <div class="table-scroll">
+            <table id="salesTable">
+              <thead>
+                <tr>
+                  <th>Comprador</th>
+                  <th>Correo</th>
+                  <th>Teléfono</th>
+                  <th>Rifas</th>
+                  <th>Números</th>
+                  <th>Monto</th>
+                  <th>Estado</th>
+                  <th>Fecha</th>
+                  <th>Comprobante</th>
+                  <th>Ticket</th>
+                </tr>
+              </thead>
+              <tbody id="salesBody"></tbody>
+            </table>
+          </div>
+
+          <p id="salesEmptyMessage" class="section-subtitle" hidden>Todavía no has registrado ventas.</p>
+        </div>
+      </section>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="vendedor.js"></script>
+  </body>
+</html>

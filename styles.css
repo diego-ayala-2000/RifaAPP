@@ -275,6 +275,29 @@ h1 {
   margin-bottom: 4px;
 }
 
+.steps-flow {
+  display: flex;
+  align-items: stretch;
+  gap: 14px;
+}
+
+.steps-flow .info-item {
+  flex: 1;
+}
+
+.step-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--primary);
+}
+
+.step-arrow svg {
+  width: 36px;
+  height: 36px;
+}
+
 .info-item {
   background: #fffaf7;
   border: 1px solid var(--border);
@@ -295,7 +318,7 @@ h1 {
   font-weight: 800;
 }
 
-.info-item:nth-child(2) .info-number {
+.steps-flow .info-item:last-child .info-number {
   background: rgba(29, 79, 160, 0.12);
   color: var(--secondary);
 }
@@ -384,7 +407,128 @@ h1 {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
   margin-bottom: 8px;
+}
+
+.subtabs {
+  margin-top: 22px;
+}
+
+.heading-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.filter-input {
+  width: 100%;
+  max-width: 340px;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 0.92rem;
+  font-family: inherit;
+  background: #fff;
+}
+
+.filter-input:focus {
+  outline: 2px solid rgba(198, 40, 40, 0.15);
+  border-color: rgba(198, 40, 40, 0.35);
+}
+
+.alert-box {
+  margin: 16px 0 4px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--error-bg);
+  border: 1px solid rgba(153, 27, 27, 0.35);
+  color: var(--error);
+}
+
+.alert-box ul {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+
+.alert-box li {
+  margin: 4px 0;
+}
+
+.pill {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.pill-ok {
+  background: var(--success-bg);
+  color: var(--success);
+}
+
+.pill-wait {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.create-seller {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 14px 0 6px;
+}
+
+.create-seller input {
+  flex: 1;
+  min-width: 220px;
+}
+
+.create-seller button {
+  margin-top: 0;
+}
+
+.link-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.seller-link {
+  display: inline-block;
+  max-width: 340px;
+  overflow-x: auto;
+  white-space: nowrap;
+  vertical-align: middle;
+  background: #f3f4f6;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 0.78rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.copy-btn.mini {
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  box-shadow: none;
+}
+
+
+.prize-note {
+  margin: 18px 0 0;
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #fff6e8, #fffaf7);
+  border: 1px dashed var(--accent);
+  color: var(--text);
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.5;
 }
 
 .payment-options {
@@ -486,14 +630,149 @@ th {
   accent-color: var(--primary);
 }
 
+.ticket-custom {
+  margin: 4px 0 16px;
+  max-width: 260px;
+}
+
+.ticket-custom span {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.ticket-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin: 18px 0;
+}
+
+.ticket-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  border: 2px solid var(--border);
+  border-radius: 18px;
+  padding: 22px 16px 18px;
+  background: #fffaf7;
+  text-align: center;
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.ticket-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(198, 40, 40, 0.4);
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.1);
+}
+
+.ticket-card input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ticket-qty {
+  font-size: 2.1rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--text);
+}
+
+.ticket-label {
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.ticket-price {
+  margin-top: 10px;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.ticket-card:focus-within {
+  outline: 2px solid rgba(198, 40, 40, 0.35);
+  outline-offset: 2px;
+}
+
+.ticket-card:has(input:checked) {
+  background: linear-gradient(160deg, #fff1f1, #fffaf7 70%);
+  border-color: var(--primary);
+  box-shadow: 0 12px 26px rgba(198, 40, 40, 0.2);
+}
+
+.ticket-card:has(input:checked) .ticket-qty {
+  color: var(--primary);
+}
+
+.ticket-card:has(input:checked)::after {
+  content: '✓';
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ticket-tag {
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent);
+  color: #4a2c00;
+  font-size: 0.66rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 3px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+  box-shadow: 0 4px 10px rgba(244, 185, 66, 0.4);
+}
+
 .summary {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: 10px;
-  color: var(--muted);
+  gap: 12px;
   flex-wrap: wrap;
-  gap: 8px;
+  margin-top: 4px;
+  padding: 16px 20px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #fff6e8, #fffaf7);
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+
+.summary p {
+  margin: 0;
+}
+
+.summary strong {
+  color: var(--text);
+}
+
+.summary-total {
+  font-size: 1.12rem;
+}
+
+.summary-total strong {
+  color: var(--primary);
+  font-size: 1.4rem;
 }
 
 .section-subtitle {
@@ -580,7 +859,8 @@ input[type='text'],
 input[type='email'],
 input[type='tel'],
 input[type='number'],
-input[type='file'] {
+input[type='file'],
+select {
   width: 100%;
   padding: 11px 12px;
   border: 1px solid var(--border);
@@ -590,9 +870,16 @@ input[type='file'] {
   background: #fff;
 }
 
-input:focus {
+input:focus,
+select:focus {
   outline: 2px solid rgba(198, 40, 40, 0.15);
   border-color: rgba(198, 40, 40, 0.35);
+}
+
+input[readonly] {
+  background: #f3f4f6;
+  color: var(--muted);
+  cursor: not-allowed;
 }
 
 small {
@@ -770,6 +1057,87 @@ button:hover {
   transform: none;
 }
 
+.hint-list {
+  margin-top: 6px;
+  border: 1px dashed var(--primary);
+  border-radius: 12px;
+  padding: 6px 16px;
+  background: #f9fbff;
+}
+
+.hint-list p {
+  margin: 12px 0;
+  color: var(--text);
+  line-height: 1.55;
+}
+
+.wa-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  border-radius: 12px;
+  background: #25d366;
+  color: white;
+  padding: 11px 20px;
+  font-size: 0.98rem;
+  font-weight: 800;
+  box-shadow: 0 8px 20px rgba(37, 211, 102, 0.28);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.wa-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(37, 211, 102, 0.34);
+}
+
+.result-panel {
+  margin-top: 18px;
+  border: 1px solid var(--success);
+  background: var(--success-bg);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.result-panel h3 {
+  color: var(--success);
+}
+
+.result-panel p {
+  margin: 8px 0;
+  color: var(--text);
+}
+
+.assigned-numbers {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--primary);
+  letter-spacing: 0.03em;
+  margin: 6px 0 16px !important;
+}
+
+.wa-message {
+  width: 100%;
+  min-height: 200px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  background: #fff;
+  color: var(--text);
+  resize: vertical;
+}
+
+.result-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
 @media (max-width: 720px) {
   .hero-stats,
   .info-grid,
@@ -780,6 +1148,18 @@ button:hover {
 
   .dash-stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ticket-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .steps-flow {
+    flex-direction: column;
+  }
+
+  .step-arrow {
+    transform: rotate(90deg);
   }
 
   .prize-grid {

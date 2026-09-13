@@ -13,19 +13,8 @@
           <span class="brand-badge">JMJ Corea 2027</span>
           <div class="topbar-links">
             <a class="cta-link" href="#comprar">Comprar rifas</a>
-            <form id="adminBarForm" class="admin-bar" autocomplete="off">
-              <input
-                type="password"
-                id="adminBarPassword"
-                class="admin-bar-input"
-                placeholder="Contraseña admin"
-                aria-label="Contraseña de administrador"
-              />
-              <button type="submit" class="admin-bar-btn" aria-label="Entrar al panel admin">→</button>
-            </form>
           </div>
         </nav>
-        <p id="adminBarError" class="admin-bar-error" aria-live="polite"></p>
 
         <div class="hero-top">
           <img class="hero-logo" src="content/images.jpeg" alt="Logo JMJ Seúl 2027" />
@@ -37,7 +26,7 @@
         </div>
 
         <p class="description">
-          Ayudanos a recaudar fondos para que los jóvenes de la parroquia puedan asistir a la peregrinación
+          Campaña de recaudación de fondos para la peregrinación de Corea
         </p>
 
         <div class="hero-stats" aria-label="Estadísticas de la rifa">
@@ -46,7 +35,7 @@
             <span>fecha estimada del sorteo</span>
           </div>
           <div class="stat">
-            <strong>$2.500</strong>
+            <strong>$2.000</strong>
             <span>por rifa</span>
           </div>
         </div>
@@ -66,75 +55,96 @@
           <div class="prize-card prize-card-silver">
             <span class="prize-medal">🥈</span>
             <span class="prize-rank">2do premio</span>
-            <p class="prize-name">Apple AirPods 4</p>
+            <p class="prize-name">Okwu Fundamental Brushes Collection</p>
           </div>
           <div class="prize-card prize-card-bronze">
             <span class="prize-medal">🥉</span>
             <span class="prize-rank">3er premio</span>
-            <p class="prize-name">Okwu Fundamental Brushes Collection</p>
-          </div>
-          <div class="prize-card">
-            <span class="prize-medal">🍷</span>
-            <span class="prize-rank">4to premio</span>
             <p class="prize-name">Vino premium</p>
           </div>
           <div class="prize-card">
             <span class="prize-medal">🍽️</span>
-            <span class="prize-rank">5to premio</span>
+            <span class="prize-rank">4to premio</span>
             <p class="prize-name">Momento Gourmet para 2</p>
           </div>
           <div class="prize-card">
             <span class="prize-medal">🎁</span>
-            <span class="prize-rank">6to premio</span>
+            <span class="prize-rank">5to premio</span>
             <p class="prize-name">Gift Card Retail x $60.000</p>
           </div>
         </div>
+
+        <p class="prize-note">🎉 ¡Y muchos premios más que se repartirán el día del sorteo!</p>
       </section>
 
-      <section class="card info-grid">
+      <section class="card steps-card">
         <h2 class="how-title">Forma de participar</h2>
-        <div class="info-item">
-          <span class="info-number">1</span>
-          <span class="info-icon">💳</span>
-          <h3>Realiza tu pago</h3>
-          <p>Transfiere el monto exacto o paga en línea con el link de Mercado Pago.</p>
-        </div>
-        <div class="info-item">
-          <span class="info-number">2</span>
-          <span class="info-icon">📝</span>
-          <h3>Confirma tu participación</h3>
-          <p>Ingresa tus datos junto al comprobante o monto pagado para confirmar tu rifa.</p>
+        <div class="steps-flow">
+          <div class="info-item">
+            <span class="info-number">1</span>
+            <span class="info-icon">💳</span>
+            <h3>Realiza tu pago</h3>
+            <p>Transfiere el monto exacto o paga en línea con el link de Mercado Pago.</p>
+          </div>
+          <div class="step-arrow" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 12h15M13 6l6 6-6 6" />
+            </svg>
+          </div>
+          <div class="info-item">
+            <span class="info-number">2</span>
+            <span class="info-icon">📲</span>
+            <h3>Envía tu comprobante al vendedor</h3>
+            <p>Reenvía el comprobante a la persona que te vendió la rifa para que asigne tus tickets y queda atento: te los enviará por WhatsApp.</p>
+          </div>
         </div>
       </section>
 
       <section class="card" id="comprar">
         <h2>Elige la cantidad de rifas</h2>
-        <div class="ticket-options" id="ticketOptions">
-          <label class="ticket-option">
+        <p class="section-subtitle">Mientras más rifas, más chances de ganar. El total se calcula solo.</p>
+        <div class="ticket-grid" id="ticketOptions">
+          <label class="ticket-card">
             <input type="radio" name="tickets" value="1" />
-            <span>1 rifa</span>
+            <span class="ticket-qty">1</span>
+            <span class="ticket-label">rifa</span>
+            <span class="ticket-price">$2.000</span>
           </label>
-          <label class="ticket-option">
+          <label class="ticket-card">
             <input type="radio" name="tickets" value="2" />
-            <span>2 rifas</span>
+            <span class="ticket-qty">2</span>
+            <span class="ticket-label">rifas</span>
+            <span class="ticket-price">$4.000</span>
           </label>
-          <label class="ticket-option">
+          <label class="ticket-card">
             <input type="radio" name="tickets" value="3" />
-            <span>3 rifas</span>
+            <span class="ticket-qty">3</span>
+            <span class="ticket-label">rifas</span>
+            <span class="ticket-price">$6.000</span>
           </label>
-          <label class="ticket-option">
+          <label class="ticket-card">
             <input type="radio" name="tickets" value="5" checked />
-            <span>5 rifas</span>
+            <span class="ticket-qty">5</span>
+            <span class="ticket-label">rifas</span>
+            <span class="ticket-price">$10.000</span>
           </label>
-          <label class="ticket-option">
+          <label class="ticket-card">
             <input type="radio" name="tickets" value="10" />
-            <span>10 rifas</span>
+            <span class="ticket-qty">10</span>
+            <span class="ticket-label">rifas</span>
+            <span class="ticket-price">$20.000</span>
+          </label>
+          <label class="ticket-card">
+            <input type="radio" name="tickets" value="20" />
+            <span class="ticket-qty">20</span>
+            <span class="ticket-label">rifas</span>
+            <span class="ticket-price">$40.000</span>
           </label>
         </div>
 
         <div class="summary">
-          <p>Precio por rifa: <strong>$2.500</strong></p>
-          <p>Total a pagar: <strong id="totalPrice">$12.500</strong></p>
+          <p>Precio por rifa: <strong>$2.000</strong></p>
+          <p class="summary-total">Total a pagar: <strong id="totalPrice">$10.000</strong></p>
         </div>
       </section>
 
@@ -144,14 +154,14 @@
           <div class="payment-option" id="transferencia">
             <h3 class="option-title option-title-primary"><span class="option-icon">🏦</span> Opción 1 · Transferencia bancaria</h3>
             <p class="payment-amount-hint">
-              Transfiere <strong id="transferAmount">$12.500</strong> a la siguiente cuenta:
+              Transfiere <strong id="transferAmount">$10.000</strong> a la siguiente cuenta:
             </p>
             <div class="transfer-box">
               <p><strong>Nombre:</strong> <span data-copy-field>Jorge Ayala Marfil</span></p>
               <p><strong>RUT:</strong> <span data-copy-field>5.868.327-2</span></p>
               <p><strong>Cuenta corriente:</strong> <span data-copy-field>15782935</span></p>
               <p><strong>Banco:</strong> <span data-copy-field>BICE</span></p>
-              <p><strong>Correo:</strong> <span data-copy-field>por definir</span></p>
+              <p><strong>Correo:</strong> <span data-copy-field>jubileoroma@gmail.com</span></p>
 
               <div class="copy-row">
                 <button type="button" id="copyTransferBtn" class="copy-btn">Copiar datos</button>
@@ -163,7 +173,7 @@
           <div class="payment-option" id="mercadopago">
             <h3 class="option-title option-title-secondary"><span class="option-icon">💠</span> Opción 2 · Mercado Pago</h3>
             <p class="payment-amount-hint">
-              Paga <strong id="mpAmount">$12.500</strong> con el siguiente link seguro de Mercado Pago:
+              Paga <strong id="mpAmount">$10.000</strong> con el siguiente link seguro de Mercado Pago:
             </p>
             <a
               class="mp-btn"
@@ -177,72 +187,20 @@
         </div>
       </section>
 
-      <section class="card" id="formulario">
-        <h2>Paso 2 · Confirma tu participación</h2>
+      <section class="card" id="siguiente-paso">
+        <h2>Paso 2 · Envía tu comprobante al vendedor</h2>
         <p class="section-subtitle">
-          Una vez realizado tu pago (opción 1 o 2), completa este formulario con tus
-          datos y el monto pagado para confirmar tu participación.
+          Una vez realizado tu pago (opción 1 o 2), <strong>reenvía el comprobante al
+          vendedor</strong> que te ofreció la rifa para que pueda asignar tus tickets y
+          queda atento a estos.
         </p>
-        <form id="purchaseForm">
-          <div class="form-grid">
-            <label>
-              Nombre completo
-              <input type="text" name="name" placeholder="Ej. Ana López" required />
-            </label>
-            <label>
-              Correo electrónico
-              <input type="email" name="email" placeholder="tu@email.com" required />
-            </label>
-            <label>
-              Teléfono
-              <input type="tel" name="phone" placeholder="999999999" required />
-            </label>
-            <label>
-              Vendida por
-              <input type="text" name="seller" placeholder="Ej. María Pérez" required />
-            </label>
-            <label class="full-width">
-              Monto depositado
-              <input id="depositAmount" type="number" name="depositAmount" min="2500" step="2500" required />
-              <small id="depositHint">Monto sugerido: $12.500. Debe coincidir con el total elegido.</small>
-            </label>
-            <label class="full-width">
-              Comprobante de pago
-              <input
-                id="proofFile"
-                type="file"
-                name="proofFile"
-                accept="image/*,.pdf"
-                required
-              />
-              <small id="proofHint">Sube una foto o captura de tu comprobante de transferencia o pago (máx. 4MB).</small>
-            </label>
-          </div>
-
-          <button type="submit">Enviar compra</button>
-        </form>
-
-        <div id="message" class="message" aria-live="polite"></div>
-      </section>
-
-      <section class="card faq-section">
-        <h2>Preguntas frecuentes</h2>
-
-        <div class="faq-list">
-          <div class="faq-item">
-            <h3>¿Cuándo se realiza el sorteo?</h3>
-            <p>El sorteo se realizará en una fecha que se comunicará oficialmente a los participantes.</p>
-          </div>
-          <div class="faq-item">
-            <h3>¿Puedo comprar más de una rifa?</h3>
-            <p>Claro, puedes elegir la cantidad que quieras y el monto se calculará automáticamente.</p>
-          </div>
-          <div class="faq-item">
-            <h3>¿Cómo se confirma la participación?</h3>
-            <p>La compra se revisará manualmente para confirmar el pago asociado a la participación.</p>
-          </div>
+        <div class="hint-list">
+          <p>📲 Envía la foto o el PDF del comprobante directamente al WhatsApp de tu vendedor.</p>
+          <p>🔢 El vendedor registrará tu compra y te responderá con tus números de rifa.</p>
+          <p>✅ Tu participación queda confirmada cuando el equipo verifica el pago.</p>
         </div>
       </section>
+
     </main>
 
     <script src="script.js"></script>
