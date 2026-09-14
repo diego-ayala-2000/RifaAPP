@@ -1,12 +1,17 @@
 const pricePerTicket = 2000;
 const totalPrice = document.getElementById('totalPrice');
 const ticketInputs = document.querySelectorAll('input[name="tickets"]');
+const customQty = document.getElementById('customQty');
 const copyTransferBtn = document.getElementById('copyTransferBtn');
 const copyFeedback = document.getElementById('copyFeedback');
 const transferAmount = document.getElementById('transferAmount');
 const mpAmount = document.getElementById('mpAmount');
 
 function getSelectedQuantity() {
+  if (customQty && customQty.value !== '') {
+    const custom = Math.floor(Number(customQty.value));
+    if (Number.isFinite(custom) && custom >= 1) return custom;
+  }
   const selected = document.querySelector('input[name="tickets"]:checked');
   return Number(selected?.value || 1);
 }
@@ -30,8 +35,18 @@ function updateTotal() {
 }
 
 ticketInputs.forEach((input) => {
-  input.addEventListener('change', updateTotal);
+  input.addEventListener('change', () => {
+    if (customQty) customQty.value = '';
+    updateTotal();
+  });
 });
+
+if (customQty) {
+  customQty.addEventListener('input', () => {
+    ticketInputs.forEach((input) => { input.checked = false; });
+    updateTotal();
+  });
+}
 
 if (copyTransferBtn) {
   copyTransferBtn.addEventListener('click', async () => {
