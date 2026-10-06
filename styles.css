@@ -815,6 +815,10 @@ th {
   border: 1px solid rgba(244, 185, 66, 0.5);
 }
 
+#contacto a {
+  color: var(--primary);
+}
+
 .copy-row {
   display: flex;
   align-items: center;
