@@ -60,6 +60,13 @@ const createSellerMsg = document.getElementById('createSellerMsg');
 const customersBody = document.getElementById('customersBody');
 const customersCount = document.getElementById('customersCount');
 
+const salesChart = document.getElementById('salesChart');
+const salesChartEmpty = document.getElementById('salesChartEmpty');
+const rankingAllBody = document.getElementById('rankingAllBody');
+const rankingAllEmpty = document.getElementById('rankingAllEmpty');
+const rankingWeekBody = document.getElementById('rankingWeekBody');
+const rankingWeekEmpty = document.getElementById('rankingWeekEmpty');
+
 const regForm = document.getElementById('regForm');
 const regSeller = document.getElementById('regSeller');
 const regName = document.getElementById('regName');
@@ -616,6 +623,227 @@ function renderCustomers(rows) {
   `).join('');
 }
 
+// ---------- Gráfico de ventas y ranking de vendedores ----------
+
+const SVG_NS = 'http://www.w3.org/2000/svg';
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+function dayKey(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+function startOfDay(date) {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+// Una fila por día desde la primera venta hasta hoy, con las rifas acumuladas.
+function buildSalesSeries(transactions) {
+  if (!transactions.length) return [];
+
+  const byDay = new Map();
+  let first = null;
+
+  transactions.forEach((tx) => {
+    const date = new Date(tx.submittedAt);
+    const key = dayKey(date);
+    const entry = byDay.get(key) || { total: 0, approved: 0 };
+    entry.total += tx.quantity;
+    if (tx.status === 'approved') entry.approved += tx.quantity;
+    byDay.set(key, entry);
+    if (!first || date < first) first = date;
+  });
+
+  const series = [];
+  const today = startOfDay(new Date());
+  let total = 0;
+  let approved = 0;
+
+  for (let day = startOfDay(first); day <= today; day.setDate(day.getDate() + 1)) {
+    const entry = byDay.get(dayKey(day)) || { total: 0, approved: 0 };
+    total += entry.total;
+    approved += entry.approved;
+    series.push({ date: new Date(day), added: entry.total, total, approved });
+  }
+
+  return series;
+}
+
+function niceStep(max, ticks) {
+  const rough = Math.max(max, 1) / ticks;
+  const magnitude = 10 ** Math.floor(Math.log10(rough));
+  return [1, 2, 5, 10].find((m) => m * magnitude >= rough) * magnitude;
+}
+
+function svgEl(tag, attrs, parent) {
+  const el = document.createElementNS(SVG_NS, tag);
+  Object.entries(attrs).forEach(([key, value]) => el.setAttribute(key, value));
+  if (parent) parent.appendChild(el);
+  return el;
+}
+
+function formatShortDate(date) {
+  return date.toLocaleDateString('es-CL', { day: 'numeric', month: 'short' });
+}
+
+function renderSalesChart(transactions) {
+  const series = buildSalesSeries(transactions);
+
+  salesChart.innerHTML = '';
+  salesChartEmpty.hidden = series.length !== 0;
+  if (!series.length) return;
+
+  const W = Math.max(salesChart.clientWidth || 900, 320);
+  const H = 260;
+  const margin = { top: 14, right: 44, bottom: 28, left: 40 };
+  const plotW = W - margin.left - margin.right;
+  const plotH = H - margin.top - margin.bottom;
+  const n = series.length;
+
+  const step = niceStep(series[n - 1].total, 4);
+  const yMax = Math.max(step, Math.ceil(series[n - 1].total / step) * step);
+  const x = (i) => margin.left + (n === 1 ? plotW / 2 : (i * plotW) / (n - 1));
+  const y = (v) => margin.top + plotH - (v / yMax) * plotH;
+
+  const svg = svgEl('svg', { viewBox: `0 0 ${W} ${H}` }, salesChart);
+
+  for (let v = 0; v <= yMax; v += step) {
+    svgEl('line', { class: 'grid-line', x1: margin.left, x2: W - margin.right, y1: y(v), y2: y(v) }, svg);
+    const label = svgEl('text', { class: 'axis-label', x: margin.left - 8, y: y(v) + 4, 'text-anchor': 'end' }, svg);
+    label.textContent = v.toLocaleString('es-CL');
+  }
+
+  const labelCount = Math.min(n, Math.max(2, Math.floor(plotW / 90)));
+  const labelIndexes = new Set();
+  for (let k = 0; k < labelCount; k += 1) {
+    labelIndexes.add(labelCount === 1 ? 0 : Math.round((k * (n - 1)) / (labelCount - 1)));
+  }
+  labelIndexes.forEach((i) => {
+    const anchor = n === 1 ? 'middle' : i === 0 ? 'start' : i === n - 1 ? 'end' : 'middle';
+    const label = svgEl('text', { class: 'axis-label', x: x(i), y: H - 8, 'text-anchor': anchor }, svg);
+    label.textContent = formatShortDate(series[i].date);
+  });
+
+  const lines = [
+    { key: 'total', color: 'var(--series-total)' },
+    { key: 'approved', color: 'var(--series-approved)' }
+  ];
+
+  lines.forEach(({ key, color }) => {
+    if (n === 1) {
+      svgEl('circle', { cx: x(0), cy: y(series[0][key]), r: 4, fill: color }, svg);
+      return;
+    }
+    const d = series.map((point, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(point[key]).toFixed(1)}`).join(' ');
+    svgEl('path', { d, fill: 'none', stroke: color, 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, svg);
+  });
+
+  // Etiquetas directas con el valor final de cada línea, separadas si quedan encimadas.
+  const last = series[n - 1];
+  let totalY = y(last.total) + 4;
+  let approvedY = y(last.approved) + 4;
+  if (approvedY - totalY < 14) {
+    const mid = (totalY + approvedY) / 2;
+    totalY = mid - 7;
+    approvedY = mid + 7;
+  }
+  [[last.total, totalY], [last.approved, approvedY]].forEach(([value, ly]) => {
+    const label = svgEl('text', { class: 'end-label', x: x(n - 1) + 8, y: ly }, svg);
+    label.textContent = value.toLocaleString('es-CL');
+  });
+
+  // Capa de hover: línea guía, puntos y tooltip del día más cercano.
+  const crosshair = svgEl('line', { class: 'crosshair', y1: margin.top, y2: margin.top + plotH, visibility: 'hidden' }, svg);
+  const dots = lines.map(({ color }) =>
+    svgEl('circle', { r: 4, fill: color, stroke: '#ffffff', 'stroke-width': 2, visibility: 'hidden' }, svg));
+  const hitArea = svgEl('rect', { x: margin.left, y: margin.top, width: plotW, height: plotH, fill: 'transparent' }, svg);
+
+  const tooltip = document.createElement('div');
+  tooltip.className = 'chart-tooltip';
+  tooltip.hidden = true;
+  salesChart.appendChild(tooltip);
+
+  const swatch = (color) => `<span class="legend-swatch" style="background:${color}"></span>`;
+
+  function showPoint(event) {
+    const rect = svg.getBoundingClientRect();
+    const scale = rect.width / W;
+    const px = (event.clientX - rect.left) / scale;
+    const i = n === 1 ? 0 : Math.min(n - 1, Math.max(0, Math.round(((px - margin.left) / plotW) * (n - 1))));
+    const point = series[i];
+
+    crosshair.setAttribute('x1', x(i));
+    crosshair.setAttribute('x2', x(i));
+    crosshair.setAttribute('visibility', 'visible');
+    lines.forEach(({ key }, k) => {
+      dots[k].setAttribute('cx', x(i));
+      dots[k].setAttribute('cy', y(point[key]));
+      dots[k].setAttribute('visibility', 'visible');
+    });
+
+    tooltip.innerHTML = `
+      <strong>${point.date.toLocaleDateString('es-CL', { weekday: 'short', day: 'numeric', month: 'short' })}</strong>
+      <div class="tooltip-row">${swatch('var(--series-total)')}Registradas: <strong>${point.total.toLocaleString('es-CL')}</strong></div>
+      <div class="tooltip-row">${swatch('var(--series-approved)')}Confirmadas: <strong>${point.approved.toLocaleString('es-CL')}</strong></div>
+      <div class="muted-text">+${point.added.toLocaleString('es-CL')} ese día</div>
+    `;
+    tooltip.hidden = false;
+
+    const left = x(i) * scale;
+    const width = tooltip.offsetWidth;
+    tooltip.style.left = `${left + 12 + width > rect.width ? left - 12 - width : left + 12}px`;
+  }
+
+  function hidePoint() {
+    crosshair.setAttribute('visibility', 'hidden');
+    dots.forEach((dot) => dot.setAttribute('visibility', 'hidden'));
+    tooltip.hidden = true;
+  }
+
+  hitArea.addEventListener('pointermove', showPoint);
+  hitArea.addEventListener('pointerdown', showPoint);
+  hitArea.addEventListener('pointerleave', hidePoint);
+}
+
+function buildRanking(transactions, since) {
+  const bySeller = new Map();
+
+  transactions.forEach((tx) => {
+    if (since && new Date(tx.submittedAt) < since) return;
+    const row = bySeller.get(tx.seller) || { name: tx.seller, rifas: 0, rifasApproved: 0, sales: 0, amount: 0 };
+    row.rifas += tx.quantity;
+    if (tx.status === 'approved') row.rifasApproved += tx.quantity;
+    row.sales += 1;
+    row.amount += Number(tx.amount || 0);
+    bySeller.set(tx.seller, row);
+  });
+
+  return [...bySeller.values()]
+    .sort((a, b) => b.rifas - a.rifas || b.amount - a.amount)
+    .slice(0, 10);
+}
+
+function renderRanking(body, emptyMessage, rows) {
+  body.innerHTML = rows.map((row, i) => `
+    <tr>
+      <td>${i + 1}</td>
+      <td><strong>${escapeHtml(row.name)}</strong></td>
+      <td>${row.rifas}${row.rifasApproved !== row.rifas ? ` <span class="muted-text">(${row.rifasApproved} conf.)</span>` : ''}</td>
+      <td>${row.sales}</td>
+      <td>${formatAmount(row.amount)}</td>
+    </tr>
+  `).join('');
+  emptyMessage.hidden = rows.length !== 0;
+}
+
+function renderSalesInsights(transactions) {
+  renderSalesChart(transactions);
+  renderRanking(rankingAllBody, rankingAllEmpty, buildRanking(transactions));
+  renderRanking(rankingWeekBody, rankingWeekEmpty, buildRanking(transactions, new Date(Date.now() - 7 * DAY_MS)));
+}
+
 function renderDashboard(dashboard) {
   const { totals, checks } = dashboard;
 
@@ -630,6 +858,7 @@ function renderDashboard(dashboard) {
   statPendingAmount.textContent = formatAmount(totals.amountPending);
 
   renderIntegrityAlerts(checks);
+  renderSalesInsights(dashboard.transactions);
   renderNumbers(dashboard.numbers);
   renderTransactions(dashboard.transactions);
   renderCustomers(dashboard.customers);
@@ -674,7 +903,18 @@ tabButtons.forEach((btn) => {
     confirmView.hidden = tab !== 'confirm';
     dashboardView.hidden = tab !== 'dashboard';
     registerView.hidden = tab !== 'register';
+
+    // El gráfico se dibuja al ancho real, que solo se conoce con la vista visible.
+    if (tab === 'dashboard' && latestDashboard) renderSalesChart(latestDashboard.transactions);
   });
+});
+
+let chartResizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(chartResizeTimer);
+  chartResizeTimer = setTimeout(() => {
+    if (!dashboardView.hidden && latestDashboard) renderSalesChart(latestDashboard.transactions);
+  }, 150);
 });
 
 subtabButtons.forEach((btn) => {

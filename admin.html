@@ -110,6 +110,45 @@
 
           <div id="integrityAlerts" class="alert-box" hidden></div>
 
+          <div class="sales-chart-block">
+            <div class="section-heading">
+              <h3>Rifas acumuladas en el tiempo</h3>
+              <div class="chart-legend" aria-hidden="true">
+                <span class="legend-item"><span class="legend-swatch legend-total"></span>Registradas</span>
+                <span class="legend-item"><span class="legend-swatch legend-approved"></span>Confirmadas</span>
+              </div>
+            </div>
+            <div id="salesChart" class="sales-chart" role="img" aria-label="Gráfico de rifas acumuladas por día"></div>
+            <p id="salesChartEmpty" class="section-subtitle" hidden>Todavía no hay ventas para graficar.</p>
+          </div>
+
+          <div class="ranking-grid">
+            <div>
+              <h3>Top vendedores · general</h3>
+              <div class="table-scroll">
+                <table class="ranking-table">
+                  <thead>
+                    <tr><th>#</th><th>Vendedor</th><th>Rifas</th><th>Ventas</th><th>Monto</th></tr>
+                  </thead>
+                  <tbody id="rankingAllBody"></tbody>
+                </table>
+              </div>
+              <p id="rankingAllEmpty" class="section-subtitle" hidden>Aún no hay ventas.</p>
+            </div>
+            <div>
+              <h3>Top vendedores · últimos 7 días</h3>
+              <div class="table-scroll">
+                <table class="ranking-table">
+                  <thead>
+                    <tr><th>#</th><th>Vendedor</th><th>Rifas</th><th>Ventas</th><th>Monto</th></tr>
+                  </thead>
+                  <tbody id="rankingWeekBody"></tbody>
+                </table>
+              </div>
+              <p id="rankingWeekEmpty" class="section-subtitle" hidden>No hay ventas en los últimos 7 días.</p>
+            </div>
+          </div>
+
           <div class="tabs subtabs" role="tablist">
             <button type="button" class="tab-btn active" data-subtab="numbers" role="tab">Asignación de números</button>
             <button type="button" class="tab-btn" data-subtab="transactions" role="tab">Transacciones</button>
