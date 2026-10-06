@@ -816,27 +816,17 @@ th {
 }
 
 .contact-bar {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 50;
+  margin-top: 8px;
   background: var(--primary);
   color: white;
   text-align: center;
   font-size: 0.92rem;
-  padding: 10px 16px;
-  box-shadow: 0 -6px 18px rgba(15, 23, 42, 0.12);
+  padding: 14px 16px;
 }
 
 .contact-bar a {
   color: white;
   font-weight: 700;
-}
-
-/* Espacio para que la barra de contacto no tape el final de la página. */
-body:has(.contact-bar) {
-  padding-bottom: 64px;
 }
 
 .copy-row {
