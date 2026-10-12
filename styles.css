@@ -1216,27 +1216,11 @@ button:hover {
   line-height: 1.55;
 }
 
-.common-fund {
-  margin-top: 18px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 4px 16px 16px;
-  background: #fffaf7;
-}
-
-.common-fund h3 {
-  margin: 14px 0 6px;
-}
-
-.common-fund p {
-  margin: 0 0 14px;
-  line-height: 1.55;
-}
-
 .wa-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  text-align: center;
   text-decoration: none;
   border: none;
   border-radius: 12px;
