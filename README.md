@@ -43,6 +43,21 @@ Genera tokens con `openssl rand -hex 8` y entrega a cada vendedor solo su enlace
 La venta entra como `pending` con números `reserved`; el equipo la confirma desde
 `admin.html`.
 
+### Tickets presenciales
+
+Pestaña **"Tickets presenciales"** de `vendedor.html` (API: `/api/seller/printed`):
+
+1. **Imprimir:** el vendedor elige cuántos tickets quiere y se genera un PDF A4 (7 por
+   hoja). Cada ticket tiene un **código único** de 6 caracteres (ej. `K7M-4QX`), un
+   talón para el vendedor (nombre, teléfono y correo del comprador) y la parte que se
+   entrega al comprador. Los códigos quedan en la tabla `printed_tickets` como
+   `available`.
+2. **Registrar:** el vendedor ingresa los códigos vendidos a un comprador, sus datos y
+   el comprobante de la transferencia. Se crea una transacción normal (`pending`), se
+   asigna un número de rifa por código y cada código pasa a `used`, ligado a su
+   transacción y número. Solo se aceptan códigos impresos por el mismo vendedor y
+   que no hayan sido registrados antes.
+
 ## Panel de administración (`admin.html`)
 
 Mismo esquema de enlace secreto que el panel de vendedores:

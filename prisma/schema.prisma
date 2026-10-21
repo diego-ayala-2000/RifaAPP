@@ -21,8 +21,9 @@ model Vendor {
   id           Int           @id @default(autoincrement())
   name         String        @unique
   token        String        @unique
-  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
-  transactions Transaction[]
+  createdAt      DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
+  transactions   Transaction[]
+  printedTickets PrintedTicket[]
 
   @@map("vendors")
 }
@@ -40,7 +41,8 @@ model Transaction {
   submittedAt   DateTime       @default(now()) @map("submitted_at") @db.Timestamptz(6)
   customer      Customer       @relation(fields: [customerId], references: [id], onDelete: Restrict)
   vendor        Vendor         @relation(fields: [vendorId], references: [id], onDelete: Restrict)
-  raffleNumbers RaffleNumber[]
+  raffleNumbers  RaffleNumber[]
+  printedTickets PrintedTicket[]
 
   @@index([customerId], map: "transactions_customer_id_idx")
   @@index([vendorId], map: "transactions_vendor_id_idx")
@@ -54,7 +56,28 @@ model RaffleNumber {
   status        String      @default("reserved")
   soldAt        DateTime?   @map("sold_at") @db.Timestamptz(6)
   transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  printedTicket PrintedTicket?
 
   @@index([transactionId], map: "raffle_numbers_transaction_id_idx")
   @@map("raffle_numbers")
+}
+
+// Tickets en papel: se imprimen con un código antes de venderse y, al registrar la
+// venta, quedan ligados a la transacción y al número de rifa asignado.
+model PrintedTicket {
+  id             Int           @id @default(autoincrement())
+  code           String        @unique
+  vendorId       Int           @map("vendor_id")
+  status         String        @default("available")
+  transactionId  Int?          @map("transaction_id")
+  raffleNumberId Int?          @unique @map("raffle_number_id")
+  createdAt      DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  usedAt         DateTime?     @map("used_at") @db.Timestamptz(6)
+  vendor         Vendor        @relation(fields: [vendorId], references: [id], onDelete: Restrict)
+  transaction    Transaction?  @relation(fields: [transactionId], references: [id], onDelete: SetNull)
+  raffleNumber   RaffleNumber? @relation(fields: [raffleNumberId], references: [id], onDelete: SetNull)
+
+  @@index([vendorId], map: "printed_tickets_vendor_id_idx")
+  @@index([transactionId], map: "printed_tickets_transaction_id_idx")
+  @@map("printed_tickets")
 }

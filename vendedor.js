@@ -15,6 +15,7 @@ const sellerNameLabel = document.getElementById('sellerNameLabel');
 
 const tabButtons = document.querySelectorAll('.tab-btn[data-tab]');
 const registerView = document.getElementById('registerView');
+const printedView = document.getElementById('printedView');
 const salesView = document.getElementById('salesView');
 
 const form = document.getElementById('sellForm');
@@ -143,7 +144,7 @@ function rifaWord(n) {
 
 // Ticket compacto (tamaño A6) con los mismos datos que antes se enviaban por WhatsApp:
 // comprador, vendedor, cantidad, monto, números asignados e historial de compras.
-function buildTicketPdf({ name, email, phone, seller, quantity, amount, numbers, submittedAt, history }) {
+function buildTicketPdf({ name, email, phone, seller, quantity, amount, numbers, codes, submittedAt, history }) {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ unit: 'mm', format: 'a6' });
   const margin = 8;
@@ -221,6 +222,7 @@ function buildTicketPdf({ name, email, phone, seller, quantity, amount, numbers,
 
   row('Cantidad', `${quantity} ${rifaWord(quantity)}`);
   row('Monto pagado', formatCurrency(amount));
+  if (codes && codes.length) row('Tickets impresos', codes.map(formatCode).join(', '));
   y += 1;
 
   ensureSpace();
@@ -402,6 +404,7 @@ async function fetchTicketDoc(transactionId) {
     quantity: transaction.quantity,
     amount: transaction.amount,
     numbers: transaction.numbers,
+    codes: transaction.codes,
     submittedAt: transaction.submittedAt,
     history
   });
@@ -616,8 +619,448 @@ tabButtons.forEach((btn) => {
 
     const tab = btn.dataset.tab;
     registerView.hidden = tab !== 'register';
+    printedView.hidden = tab !== 'printed';
     salesView.hidden = tab !== 'sales';
+
+    if (tab === 'printed') loadPrinted();
   });
+});
+
+// ---------------------------------------------------------------------------
+// Tickets presenciales: se imprimen con un código, se venden en papel y luego se
+// registran con los datos del comprador y el comprobante de la transferencia.
+// ---------------------------------------------------------------------------
+
+const printForm = document.getElementById('printForm');
+const printQty = document.getElementById('printQty');
+const printBtn = document.getElementById('printBtn');
+const printMessage = document.getElementById('printMessage');
+
+const printedSaleForm = document.getElementById('printedSaleForm');
+const printedCodes = document.getElementById('printedCodes');
+const printedCodesHint = document.getElementById('printedCodesHint');
+const printedCount = document.getElementById('printedCount');
+const printedTotal = document.getElementById('printedTotal');
+const printedProofFile = document.getElementById('printedProofFile');
+const printedSaleMessage = document.getElementById('printedSaleMessage');
+
+const printedResultPanel = document.getElementById('printedResultPanel');
+const printedAssigned = document.getElementById('printedAssigned');
+const printedPdfBtn = document.getElementById('printedPdfBtn');
+const printedShareBtn = document.getElementById('printedShareBtn');
+const printedFeedback = document.getElementById('printedFeedback');
+const printedNewBtn = document.getElementById('printedNewBtn');
+
+const reprintBtn = document.getElementById('reprintBtn');
+const refreshPrintedBtn = document.getElementById('refreshPrintedBtn');
+const printedBody = document.getElementById('printedBody');
+const printedEmptyMessage = document.getElementById('printedEmptyMessage');
+const statPrinted = document.getElementById('statPrinted');
+const statPrintedAvailable = document.getElementById('statPrintedAvailable');
+const statPrintedUsed = document.getElementById('statPrintedUsed');
+
+const TICKETS_PER_PAGE = 7;
+const CODE_LENGTH = 6;
+
+let printedTickets = [];
+let printedReceipt = null;
+let logoDataUrl;
+
+function showNotice(element, text, type = 'info') {
+  element.className = `message ${type}`;
+  element.style.display = 'block';
+  element.textContent = text;
+}
+
+function hideNotice(element) {
+  element.style.display = 'none';
+  element.textContent = '';
+}
+
+// En papel el código se muestra en dos bloques (K7M-4QX) para leerlo sin errores;
+// al registrarlo se aceptan con o sin guion.
+function formatCode(code) {
+  const clean = String(code || '');
+  return clean.length === CODE_LENGTH ? `${clean.slice(0, 3)}-${clean.slice(3)}` : clean;
+}
+
+function parseCodes(text) {
+  const codes = String(text || '')
+    .toUpperCase()
+    .split(/[\s,;]+/)
+    .map((code) => code.replace(/[^A-Z0-9]/g, ''))
+    .filter(Boolean);
+  return [...new Set(codes)];
+}
+
+async function loadLogo() {
+  if (logoDataUrl !== undefined) return logoDataUrl;
+
+  try {
+    const response = await fetch('content/images.jpeg');
+    const blob = await response.blob();
+    logoDataUrl = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  } catch (error) {
+    logoDataUrl = null;
+  }
+
+  return logoDataUrl;
+}
+
+// Hoja A4 con 7 tickets. Cada ticket tiene a la izquierda el talón del vendedor
+// (donde se anotan los datos del comprador) y a la derecha la parte del comprador.
+function buildPrintSheetPdf(codes, seller, logo) {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const marginX = 10;
+  const marginTop = 12;
+  const ticketHeight = 39;
+  const stubWidth = 66;
+  const left = marginX;
+  const right = pageWidth - marginX;
+  const cutX = left + stubWidth;
+
+  function cutLine(x1, y1, x2, y2) {
+    doc.setDrawColor(150);
+    doc.setLineDashPattern([1.5, 1.2], 0);
+    doc.line(x1, y1, x2, y2);
+    doc.setLineDashPattern([], 0);
+  }
+
+  function writeLine(label, x, y, width) {
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7.5);
+    doc.setTextColor(60);
+    doc.text(label, x, y);
+    doc.setDrawColor(170);
+    doc.line(x + doc.getTextWidth(label) + 1, y + 0.6, x + width, y + 0.6);
+  }
+
+  codes.forEach((code, index) => {
+    const slot = index % TICKETS_PER_PAGE;
+    if (index > 0 && slot === 0) doc.addPage();
+
+    const top = marginTop + slot * ticketHeight;
+    const bottom = top + ticketHeight;
+
+    // Líneas de corte del ticket y entre talón y parte del comprador.
+    cutLine(left, top, right, top);
+    cutLine(left, bottom, right, bottom);
+    cutLine(left, top, left, bottom);
+    cutLine(right, top, right, bottom);
+    cutLine(cutX, top, cutX, bottom);
+
+    // Talón del vendedor.
+    const sx = left + 4;
+    const sw = stubWidth - 8;
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7);
+    doc.setTextColor(198, 40, 40);
+    doc.text('TALÓN VENDEDOR', sx, top + 5.5);
+    doc.setFont('courier', 'bold');
+    doc.setFontSize(14);
+    doc.setTextColor(0);
+    doc.text(formatCode(code), sx, top + 11.5);
+    writeLine('Nombre:', sx, top + 18, sw);
+    writeLine('Teléfono:', sx, top + 24, sw);
+    writeLine('Correo:', sx, top + 30, sw);
+    doc.setFontSize(6.5);
+    doc.setTextColor(110);
+    doc.text(doc.splitTextToSize(`Vendedor: ${seller}`, sw)[0], sx, top + 35.5);
+
+    // Parte del comprador.
+    const bx = cutX + 5;
+    const logoSize = 22;
+    const bw = right - bx - 4 - (logo ? logoSize + 4 : 0);
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(0);
+    const titleLines = doc.splitTextToSize(RAFFLE_NAME, bw).slice(0, 2);
+    doc.text(titleLines, bx, top + 5.5);
+
+    const afterTitle = top + 5.5 + titleLines.length * 3.6;
+    doc.setFontSize(7);
+    doc.setTextColor(198, 40, 40);
+    doc.text('TICKET DEL COMPRADOR', bx, afterTitle + 1.5);
+
+    doc.setFont('courier', 'bold');
+    doc.setFontSize(20);
+    doc.setTextColor(0);
+    doc.text(formatCode(code), bx, afterTitle + 10);
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7.5);
+    doc.setTextColor(40);
+    doc.text(`Valor: ${formatCurrency(PRICE_PER_TICKET)}  ·  Sorteo: noviembre de 2026  ·  Vendedor: ${seller}`, bx, afterTitle + 15.5, {
+      maxWidth: right - bx - 4
+    });
+
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(6.5);
+    doc.setTextColor(110);
+    doc.text(
+      doc.splitTextToSize(
+        'Conserva este ticket. Tu número de rifa se asigna cuando el vendedor registra tu pago con este código.',
+        right - bx - 4
+      ),
+      bx,
+      bottom - 5
+    );
+
+    if (logo) {
+      doc.addImage(logo, 'JPEG', right - 4 - logoSize, top + 4, logoSize, logoSize);
+    }
+  });
+
+  doc.setTextColor(0);
+  return doc;
+}
+
+async function savePrintSheet(codes, seller) {
+  const logo = await loadLogo();
+  const doc = buildPrintSheetPdf(codes, seller, logo);
+  const stamp = new Date().toISOString().slice(0, 10);
+  doc.save(`tickets-presenciales-${String(seller || 'vendedor').replace(/\s+/g, '_').toLowerCase()}-${stamp}.pdf`);
+}
+
+function printedStatusPill(row) {
+  return row.status === 'available'
+    ? '<span class="pill pill-wait">Sin registrar</span>'
+    : '<span class="pill pill-ok">Registrado</span>';
+}
+
+function renderPrinted(result) {
+  printedTickets = result.tickets || [];
+  const totals = result.totals || {};
+
+  statPrinted.textContent = totals.printed || 0;
+  statPrintedAvailable.textContent = totals.available || 0;
+  statPrintedUsed.textContent = totals.used || 0;
+
+  printedBody.innerHTML = printedTickets.map((row) => `
+    <tr>
+      <td class="ticket-code">${escapeHtml(formatCode(row.code))}</td>
+      <td>${printedStatusPill(row)}</td>
+      <td>${escapeHtml(row.customer || '—')}</td>
+      <td>${row.raffleNumber ?? '—'}</td>
+      <td>${formatDate(row.createdAt)}</td>
+      <td>${formatDate(row.usedAt)}</td>
+    </tr>
+  `).join('');
+
+  printedEmptyMessage.hidden = printedTickets.length !== 0;
+  reprintBtn.disabled = !totals.available;
+}
+
+async function loadPrinted() {
+  try {
+    const response = await fetch('/api/seller/printed', {
+      headers: { 'x-seller-token': SELLER_TOKEN }
+    });
+    const result = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      throw new Error(result.error || 'No se pudieron cargar los tickets impresos.');
+    }
+
+    renderPrinted(result);
+  } catch (error) {
+    showNotice(printMessage, error.message, 'error');
+  }
+}
+
+function updatePrintedTotal() {
+  const codes = parseCodes(printedCodes.value);
+  const invalid = codes.filter((code) => code.length !== CODE_LENGTH);
+
+  printedCount.textContent = codes.length;
+  printedTotal.textContent = formatCurrency(codes.length * PRICE_PER_TICKET);
+
+  if (invalid.length) {
+    printedCodesHint.classList.remove('is-valid');
+    printedCodesHint.textContent = `Revisa: ${invalid.join(', ')} (cada código tiene ${CODE_LENGTH} caracteres).`;
+  } else if (codes.length) {
+    printedCodesHint.classList.add('is-valid');
+    printedCodesHint.textContent = `${codes.length} ${rifaWord(codes.length)} × ${formatCurrency(PRICE_PER_TICKET)} = ${formatCurrency(codes.length * PRICE_PER_TICKET)}.`;
+  } else {
+    printedCodesHint.classList.remove('is-valid');
+    printedCodesHint.textContent = 'Separa los códigos con comas, espacios o saltos de línea.';
+  }
+}
+
+printedCodes.addEventListener('input', updatePrintedTotal);
+
+printForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  const quantity = Math.floor(Number(printQty.value));
+
+  if (!Number.isInteger(quantity) || quantity < 1 || quantity > 200) {
+    showNotice(printMessage, 'Ingresa una cantidad entre 1 y 200.', 'error');
+    return;
+  }
+
+  printBtn.disabled = true;
+  showNotice(printMessage, 'Generando códigos...', 'info');
+
+  try {
+    const response = await fetch('/api/seller/printed', {
+      method: 'POST',
+      headers: { 'x-seller-token': SELLER_TOKEN, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ quantity })
+    });
+    const result = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      throw new Error(result.error || 'No se pudieron generar los tickets.');
+    }
+
+    await savePrintSheet(result.codes, result.seller || sellerName);
+    showNotice(printMessage, `¡Listo! Se descargó el PDF con ${result.codes.length} tickets para imprimir.`, 'success');
+    loadPrinted();
+  } catch (error) {
+    showNotice(printMessage, error.message, 'error');
+  } finally {
+    printBtn.disabled = false;
+  }
+});
+
+reprintBtn.addEventListener('click', async () => {
+  const codes = printedTickets.filter((row) => row.status === 'available').map((row) => row.code).sort();
+  if (!codes.length) return;
+
+  reprintBtn.disabled = true;
+  try {
+    await savePrintSheet(codes, sellerName);
+  } finally {
+    reprintBtn.disabled = false;
+  }
+});
+
+refreshPrintedBtn.addEventListener('click', loadPrinted);
+
+printedSaleForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  const data = new FormData(printedSaleForm);
+  const codes = parseCodes(printedCodes.value);
+  const name = data.get('name')?.toString().trim() || '';
+  const email = data.get('email')?.toString().trim() || '';
+  const phone = (data.get('phone')?.toString() || '').replace(/\D/g, '').replace(/^56(?=\d{9}$)/, '');
+  const proofFile = printedProofFile?.files?.[0];
+
+  if (!codes.length) {
+    showNotice(printedSaleMessage, 'Ingresa al menos un código de ticket.', 'error');
+    return;
+  }
+
+  if (codes.some((code) => code.length !== CODE_LENGTH)) {
+    showNotice(printedSaleMessage, `Cada código debe tener ${CODE_LENGTH} caracteres.`, 'error');
+    return;
+  }
+
+  if (!name || !email || phone.length !== 9) {
+    showNotice(printedSaleMessage, 'Completa nombre, correo y teléfono (9 dígitos) del comprador.', 'error');
+    return;
+  }
+
+  if (!proofFile) {
+    showNotice(printedSaleMessage, 'Debes adjuntar el comprobante de la transferencia.', 'error');
+    return;
+  }
+
+  if (proofFile.size > MAX_PROOF_SIZE) {
+    showNotice(printedSaleMessage, 'El comprobante es muy pesado. Debe ser menor a 4MB.', 'error');
+    return;
+  }
+
+  showNotice(printedSaleMessage, 'Registrando los tickets...', 'info');
+
+  try {
+    const payload = new FormData();
+    payload.set('codes', codes.join(','));
+    payload.set('name', name);
+    payload.set('email', email);
+    payload.set('phone', phone);
+    payload.set('proofFile', proofFile);
+
+    const response = await fetch('/api/seller/printed', {
+      method: 'POST',
+      headers: { 'x-seller-token': SELLER_TOKEN },
+      body: payload
+    });
+    const result = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      throw new Error(result.error || `No se pudieron registrar los tickets (${response.status}).`);
+    }
+
+    const numbers = result.data?.raffleNumbers || [];
+    const savedCodes = result.data?.codes || codes;
+    const quantity = savedCodes.length;
+
+    printedAssigned.textContent = savedCodes
+      .map((code, i) => `${formatCode(code)} → n° ${numbers[i] ?? '—'}`)
+      .join('  ·  ');
+
+    printedReceipt = {
+      name,
+      doc: buildTicketPdf({
+        name,
+        email,
+        phone,
+        seller: sellerName,
+        quantity,
+        amount: quantity * PRICE_PER_TICKET,
+        numbers,
+        codes: savedCodes,
+        history: result.history
+      })
+    };
+
+    hideNotice(printedSaleMessage);
+    printedResultPanel.hidden = false;
+    printedResultPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    if (result.summary) renderSummary(result.summary);
+    printedSaleForm.reset();
+    updatePrintedTotal();
+    loadPrinted();
+  } catch (error) {
+    showNotice(printedSaleMessage, `No se pudieron registrar los tickets. ${error.message}`, 'error');
+  }
+});
+
+function flashPrintedFeedback(text) {
+  printedFeedback.textContent = text;
+  setTimeout(() => {
+    printedFeedback.textContent = '';
+  }, 3000);
+}
+
+printedPdfBtn.addEventListener('click', () => {
+  if (!printedReceipt) return;
+  downloadTicket(printedReceipt.doc, printedReceipt.name);
+  flashPrintedFeedback('¡Ticket descargado!');
+});
+
+printedShareBtn.addEventListener('click', async () => {
+  if (!printedReceipt) return;
+  const shared = await shareTicket(printedReceipt.doc, printedReceipt.name);
+  flashPrintedFeedback(shared ? '¡Ticket compartido!' : '¡Ticket descargado! Adjúntalo en WhatsApp.');
+});
+
+printedNewBtn.addEventListener('click', () => {
+  printedResultPanel.hidden = true;
+  hideNotice(printedSaleMessage);
+  printedSaleForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
 });
 
 if (refreshSalesBtn) {
