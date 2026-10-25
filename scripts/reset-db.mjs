@@ -1,7 +1,7 @@
 // Vacía las tablas de la rifa y reinicia los contadores (números desde 1 otra vez).
 // Uso:  node scripts/reset-db.mjs --yes
 //
-// BORRA: printed_tickets, vendors, transactions, raffle_numbers, customers.
+// BORRA: vendors, transactions, raffle_numbers, customers.
 // NO toca variables de entorno ni la clave admin.
 import 'dotenv/config';
 import { PrismaNeon } from '@prisma/adapter-neon';
@@ -25,7 +25,7 @@ const prisma = new PrismaClient({ adapter: new PrismaNeon({ connectionString }) 
 
 try {
   await prisma.$executeRawUnsafe(
-    'TRUNCATE "printed_tickets", "raffle_numbers", "transactions", "vendors", "customers" RESTART IDENTITY CASCADE'
+    'TRUNCATE "raffle_numbers", "transactions", "vendors", "customers" RESTART IDENTITY CASCADE'
   );
   console.log('✅ Base limpia. Vendedores, transacciones, números y clientes en 0.');
 } catch (error) {

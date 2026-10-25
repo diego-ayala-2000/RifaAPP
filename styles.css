@@ -904,7 +904,6 @@ input[type='email'],
 input[type='tel'],
 input[type='number'],
 input[type='file'],
-textarea,
 select {
   width: 100%;
   padding: 11px 12px;
@@ -916,7 +915,6 @@ select {
 }
 
 input:focus,
-textarea:focus,
 select:focus {
   outline: 2px solid rgba(198, 40, 40, 0.15);
   border-color: rgba(198, 40, 40, 0.35);
@@ -1242,6 +1240,35 @@ button:hover {
   box-shadow: 0 10px 22px rgba(37, 211, 102, 0.34);
 }
 
+.pending-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.delete-btn {
+  margin-top: 0;
+  padding: 8px 14px;
+  font-size: 0.85rem;
+  border: 1px solid var(--primary);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--primary);
+  font-weight: 700;
+  box-shadow: none;
+  white-space: nowrap;
+}
+
+.delete-btn:hover {
+  transform: none;
+  box-shadow: none;
+  background: #fdecea;
+}
+
+.delete-btn:disabled {
+  opacity: 0.6;
+}
+
 .result-panel {
   margin-top: 18px;
   border: 1px solid var(--success);
@@ -1279,33 +1306,6 @@ button:hover {
   background: #fff;
   color: var(--text);
   resize: vertical;
-}
-
-.print-form {
-  display: flex;
-  align-items: flex-end;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.print-form label {
-  flex: 1 1 240px;
-}
-
-.printed-step {
-  margin-top: 32px;
-}
-
-#printedCodes {
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  resize: vertical;
-}
-
-.ticket-code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-weight: 700;
-  letter-spacing: 0.06em;
 }
 
 .result-actions {

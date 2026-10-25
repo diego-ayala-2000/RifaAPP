@@ -43,7 +43,6 @@
       <section class="card" id="sellerPanel" hidden>
         <div class="tabs" role="tablist">
           <button type="button" class="tab-btn active" data-tab="register" role="tab">Registrar venta</button>
-          <button type="button" class="tab-btn" data-tab="printed" role="tab">Tickets presenciales</button>
           <button type="button" class="tab-btn" data-tab="sales" role="tab">Mis ventas</button>
         </div>
 
@@ -149,127 +148,6 @@
 
             <button type="button" id="newSaleBtn">Registrar otra venta</button>
           </div>
-        </div>
-
-        <div id="printedView" hidden>
-          <h2>1. Imprimir tickets</h2>
-          <p class="section-subtitle">
-            Genera tickets en papel, cada uno con un <strong>código único</strong>. Cada ticket
-            tiene un talón para ti (anota ahí al comprador) y una parte que se entrega al
-            comprador. Imprime en hoja carta/A4 y corta por las líneas punteadas.
-          </p>
-
-          <form id="printForm" class="print-form">
-            <label>
-              Cantidad de tickets a imprimir
-              <input type="number" id="printQty" min="1" max="200" step="1" value="14" inputmode="numeric" required />
-              <small>Entran 7 tickets por hoja (máximo 200 por vez).</small>
-            </label>
-            <button type="submit" id="printBtn">🖨️ Generar tickets (PDF)</button>
-          </form>
-
-          <div id="printMessage" class="message" aria-live="polite"></div>
-
-          <h2 class="printed-step">2. Registrar tickets vendidos</h2>
-          <p class="section-subtitle">
-            Ingresa los códigos de los tickets que vendiste a un mismo comprador, sus datos y
-            el comprobante de la transferencia. La venta se registra como
-            <strong>pendiente</strong>, igual que las demás, y se le asigna un número de rifa a
-            cada código.
-          </p>
-
-          <form id="printedSaleForm">
-            <div class="form-grid">
-              <label class="full-width">
-                Códigos de los tickets
-                <textarea id="printedCodes" name="codes" rows="3" placeholder="Ej. K7M4QX, 9RTB2H" required></textarea>
-                <small id="printedCodesHint">Separa los códigos con comas, espacios o saltos de línea.</small>
-              </label>
-              <label>
-                Nombre del comprador
-                <input type="text" name="name" placeholder="Ej. Ana López" required />
-              </label>
-              <label>
-                Correo del comprador
-                <input type="email" name="email" placeholder="comprador@email.com" required />
-              </label>
-              <label class="full-width">
-                Teléfono / WhatsApp del comprador
-                <input type="tel" name="phone" inputmode="numeric" placeholder="912345678" required />
-                <small><strong>9 dígitos</strong>, sin el +56 (ej. 912345678).</small>
-              </label>
-            </div>
-
-            <div class="summary">
-              <p>Tickets: <strong id="printedCount">0</strong></p>
-              <p>Monto de la transferencia: <strong id="printedTotal">$0</strong></p>
-            </div>
-
-            <div class="form-grid">
-              <label class="full-width">
-                Comprobante de la transferencia
-                <input id="printedProofFile" type="file" name="proofFile" accept="image/*,.pdf" required />
-                <small>Foto o PDF del comprobante (máx. 4MB).</small>
-              </label>
-            </div>
-
-            <button type="submit">Registrar tickets vendidos</button>
-          </form>
-
-          <div id="printedSaleMessage" class="message" aria-live="polite"></div>
-
-          <div id="printedResultPanel" class="result-panel" hidden>
-            <h3>✅ Tickets registrados</h3>
-            <p>Números asignados a cada código:</p>
-            <p class="assigned-numbers" id="printedAssigned"></p>
-            <div class="result-actions">
-              <button type="button" id="printedPdfBtn" class="copy-btn">📄 Descargar ticket (PDF)</button>
-              <button type="button" id="printedShareBtn" class="wa-btn">📲 Compartir por WhatsApp</button>
-              <span id="printedFeedback" class="copy-feedback" aria-live="polite"></span>
-            </div>
-            <button type="button" id="printedNewBtn">Registrar otros tickets</button>
-          </div>
-
-          <div class="section-heading printed-step">
-            <h2>Mis tickets impresos</h2>
-            <div class="result-actions">
-              <button type="button" id="reprintBtn" class="copy-btn">🖨️ Reimprimir disponibles</button>
-              <button type="button" id="refreshPrintedBtn" class="copy-btn">Actualizar</button>
-            </div>
-          </div>
-
-          <div class="dash-stats">
-            <div class="dash-stat">
-              <strong id="statPrinted">0</strong>
-              <span>impresos</span>
-            </div>
-            <div class="dash-stat">
-              <strong id="statPrintedAvailable">0</strong>
-              <span>sin registrar</span>
-            </div>
-            <div class="dash-stat">
-              <strong id="statPrintedUsed">0</strong>
-              <span>registrados</span>
-            </div>
-          </div>
-
-          <div class="table-scroll">
-            <table>
-              <thead>
-                <tr>
-                  <th>Código</th>
-                  <th>Estado</th>
-                  <th>Comprador</th>
-                  <th>N° de rifa</th>
-                  <th>Impreso</th>
-                  <th>Registrado</th>
-                </tr>
-              </thead>
-              <tbody id="printedBody"></tbody>
-            </table>
-          </div>
-
-          <p id="printedEmptyMessage" class="section-subtitle" hidden>Todavía no has impreso tickets.</p>
         </div>
 
         <div id="salesView" hidden>

@@ -163,12 +163,20 @@ function renderConfirmView(purchases) {
       <td>${purchase.raffleNumbers.join(', ')}</td>
       <td>${formatDate(purchase.submittedAt)}</td>
       <td>${purchase.proofUrl ? `<button type="button" class="copy-btn view-proof-btn" data-url="${escapeHtml(purchase.proofUrl)}">Ver foto</button>` : '—'}</td>
-      <td><button type="button" class="copy-btn confirm-btn" data-id="${purchase.id}">Confirmar</button></td>
+      <td class="pending-actions">
+        <button type="button" class="copy-btn confirm-btn" data-id="${purchase.id}">Confirmar</button>
+        <button type="button" class="delete-btn" data-id="${purchase.id}">Eliminar</button>
+      </td>
     </tr>
   `).join('');
 
   pendingBody.querySelectorAll('.confirm-btn').forEach((btn) => {
     btn.addEventListener('click', () => handleConfirm(btn.dataset.id, btn));
+  });
+
+  pendingBody.querySelectorAll('.delete-btn').forEach((btn) => {
+    const purchase = pending.find((item) => String(item.id) === btn.dataset.id);
+    btn.addEventListener('click', () => handleDelete(purchase, btn));
   });
 
   pendingBody.querySelectorAll('.view-proof-btn').forEach((btn) => {
@@ -232,6 +240,45 @@ async function handleConfirm(id, button) {
       button.disabled = false;
       button.textContent = 'Confirmar';
     }
+    window.alert(error.message);
+  }
+}
+
+async function handleDelete(purchase, button) {
+  if (!purchase) return;
+
+  const numbers = purchase.raffleNumbers.length ? purchase.raffleNumbers.join(', ') : '—';
+  const ok = window.confirm(
+    `¿Eliminar la compra de ${purchase.name} (${purchase.quantity} ${purchase.quantity === 1 ? 'rifa' : 'rifas'}, ` +
+    `${formatAmount(purchase.amount)}, vendedor: ${purchase.seller})?\n\n` +
+    `Se borran la compra y su comprobante, y los números ${numbers} quedan libres para otra venta. ` +
+    'Esta acción no se puede deshacer.'
+  );
+  if (!ok) return;
+
+  button.disabled = true;
+  button.textContent = 'Eliminando...';
+
+  try {
+    const response = await fetch('/api/admin/delete-purchase', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-admin-key': ADMIN_KEY
+      },
+      body: JSON.stringify({ transactionId: purchase.id })
+    });
+
+    const result = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      throw new Error(result.error || 'No se pudo eliminar la compra.');
+    }
+
+    await loadAll();
+  } catch (error) {
+    button.disabled = false;
+    button.textContent = 'Eliminar';
     window.alert(error.message);
   }
 }
