@@ -1,6 +1,8 @@
-const PRICE_PER_TICKET = 2000;
 const MAX_PROOF_SIZE = 4 * 1024 * 1024;
-const RAFFLE_NAME = 'Rifa JMJ Corea 2027 · Camino Neocatecumenal Parroquia San Pedro de las Condes';
+// Se completan con los datos de la rifa (raffle.js) antes de mostrar la página.
+let PRICE_PER_TICKET = 0;
+let RAFFLE_NAME = '';
+let DRAW_WHEN = '';
 
 // Cada vendedor tiene su enlace personal con su token: vendedor.html?t=TOKEN
 const SELLER_TOKEN =
@@ -272,7 +274,7 @@ function buildTicketPdf({ name, email, phone, seller, quantity, amount, numbers,
   doc.setFontSize(7);
   doc.setTextColor(110);
   const footer = doc.splitTextToSize(
-    'Tu participación se confirma una vez verificado el pago. El sorteo será en noviembre de 2026. ¡Mucha suerte!',
+    `Tu participación se confirma una vez verificado el pago.${DRAW_WHEN ? ` El sorteo será en ${DRAW_WHEN}.` : ''} ¡Mucha suerte!`,
     contentWidth
   );
   footer.forEach((footerLine) => {
@@ -632,4 +634,9 @@ if (!SELLER_TOKEN) {
   });
 }
 
-updateTotal();
+window.raffleReady.then((raffle) => {
+  PRICE_PER_TICKET = raffle.price;
+  RAFFLE_NAME = raffle.ticketName;
+  DRAW_WHEN = raffle.draw?.when || '';
+  updateTotal();
+});

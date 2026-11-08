@@ -1,3 +1,12 @@
+.raffle-loading body {
+  visibility: hidden;
+}
+
+/* Lo que la configuración de la rifa oculta debe ocultarse aunque tenga otro display. */
+[hidden] {
+  display: none !important;
+}
+
 :root {
   color-scheme: light;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;

@@ -1,4 +1,4 @@
-const pricePerTicket = 2000;
+let pricePerTicket = 0;
 const totalPrice = document.getElementById('totalPrice');
 const ticketInputs = document.querySelectorAll('input[name="tickets"]');
 const customQty = document.getElementById('customQty');
@@ -32,6 +32,88 @@ function updateTotal() {
   if (mpAmount) {
     mpAmount.textContent = formatted;
   }
+}
+
+const PRIZE_MEDALS = [
+  { medal: '🥇', className: 'prize-card-gold' },
+  { medal: '🥈', className: 'prize-card-silver' },
+  { medal: '🥉', className: 'prize-card-bronze' }
+];
+
+function prizeRank(position) {
+  if (position === 1) return '1er premio';
+  if (position === 2) return '2do premio';
+  if (position === 3) return '3er premio';
+  return `${position}° premio`;
+}
+
+function renderPrizes(prizes) {
+  const grid = document.getElementById('prizeGrid');
+  if (!grid) return;
+
+  grid.innerHTML = '';
+  prizes.forEach((prize, index) => {
+    const style = PRIZE_MEDALS[index] || { medal: '🎁', className: '' };
+    const card = document.createElement('div');
+    card.className = `prize-card ${style.className}`.trim();
+
+    const medal = document.createElement('span');
+    medal.className = 'prize-medal';
+    medal.textContent = style.medal;
+
+    const rank = document.createElement('span');
+    rank.className = 'prize-rank';
+    rank.textContent = prizeRank(index + 1);
+
+    const name = document.createElement('p');
+    name.className = 'prize-name';
+    name.textContent = prize;
+
+    card.append(medal, rank, name);
+    grid.append(card);
+  });
+}
+
+// Numera las opciones de pago visibles ("Opción 1 · ...") solo si hay más de una.
+function labelPaymentOptions() {
+  const options = Array.from(document.querySelectorAll('#pago .payment-option')).filter((option) => !option.hidden);
+  const numbered = options.length > 1;
+
+  options.forEach((option, index) => {
+    const label = option.querySelector('.option-label');
+    if (!label) return;
+    const base = label.dataset.base || label.textContent;
+    label.dataset.base = base;
+    label.textContent = numbered ? `Opción ${index + 1} · ${base}` : base;
+  });
+
+  document.querySelectorAll('.payment-choice').forEach((el) => {
+    el.textContent = numbered ? ` (opción 1 o ${options.length})` : '';
+  });
+
+  const pending = document.getElementById('paymentPending');
+  if (pending) pending.hidden = options.length > 0;
+}
+
+function applyRaffle(raffle) {
+  pricePerTicket = raffle.price;
+  renderPrizes(raffle.prizes || []);
+  labelPaymentOptions();
+
+  const commonFundLink = document.getElementById('commonFundLink');
+  if (commonFundLink && raffle.commonFundWhatsapp) {
+    commonFundLink.href = `https://wa.me/${raffle.commonFundWhatsapp}?text=${encodeURIComponent('Hola, mi nombre es: ')}`;
+  }
+
+  const singlePath = document.getElementById('singlePath');
+  if (singlePath) singlePath.hidden = Boolean(raffle.commonFundWhatsapp);
+
+  const contactLink = document.getElementById('contactLink');
+  if (contactLink && raffle.contactEmail) {
+    contactLink.href = `mailto:${raffle.contactEmail}`;
+  }
+
+  updateTotal();
 }
 
 ticketInputs.forEach((input) => {
@@ -86,4 +168,4 @@ if ('IntersectionObserver' in window) {
   });
 }
 
-updateTotal();
+window.raffleReady.then(applyRaffle);

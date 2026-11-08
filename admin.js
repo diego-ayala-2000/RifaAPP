@@ -4,8 +4,10 @@ const ADMIN_KEY =
   new URLSearchParams(location.search).get('key') ||
   '';
 
-const PRICE_PER_TICKET = 2000;
-const RAFFLE_NAME = 'Rifa JMJ Corea 2027 · Parroquia San Pedro de Las Condes';
+// Se completan con los datos de la rifa (raffle.js) antes de mostrar la página.
+let PRICE_PER_TICKET = 0;
+let RAFFLE_NAME = '';
+let DRAW_WHEN = '';
 
 const accessDenied = document.getElementById('accessDenied');
 const adminPanel = document.getElementById('adminPanel');
@@ -507,8 +509,8 @@ function regBuildMessage({ name, sellerName, quantity, amount, numbers, history 
   }
 
   msg +=
-    `Guarda este mensaje. Tu participación se confirma una vez verificado el pago. ` +
-    `El sorteo será en noviembre de 2026.\n\n` +
+    `Guarda este mensaje. Tu participación se confirma una vez verificado el pago.` +
+    `${DRAW_WHEN ? ` El sorteo será en ${DRAW_WHEN}.` : ''}\n\n` +
     `¡Mucha suerte! 🍀`;
 
   return msg;
@@ -1020,7 +1022,12 @@ regNewSaleBtn.addEventListener('click', () => {
   regForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
 });
 
-regUpdateTotal();
+window.raffleReady.then((raffle) => {
+  PRICE_PER_TICKET = raffle.price;
+  RAFFLE_NAME = raffle.ticketName;
+  DRAW_WHEN = raffle.draw?.when || '';
+  regUpdateTotal();
+});
 
 if (!ADMIN_KEY) {
   showAccessDenied();

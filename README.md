@@ -14,6 +14,21 @@ La contraseña nunca se usa en `index.html` ni en `script.js`. El navegador env�
 formulario a `/api/submit-purchase`; esa función lee `DATABASE_URL` en el servidor y
 guarda la compra mediante Prisma Client.
 
+## Varias rifas con el mismo código
+
+Cada rifa es un **proyecto de Vercel distinto** conectado a este mismo repositorio, con
+su propia base de datos Neon, su propio Blob y su propia clave admin. La variable de
+entorno `RAFFLE` dice qué rifa es (`jmj` o `postconfirmacion`; sin ella se usa `jmj`).
+
+Los datos de cada rifa (nombre, precio, fecha del sorteo, premios, cuenta bancaria,
+Mercado Pago, WhatsApp, logo) están en `lib/raffles.js`. Las páginas los leen desde
+`/api/config`; los campos en `null` o listas vacías se ocultan. Para cambiar un dato,
+edita ese archivo y despliega.
+
+Para una rifa nueva: agrega su entrada en `lib/raffles.js`, crea la base en Neon, crea
+el proyecto en Vercel con `RAFFLE`, `DATABASE_URL`, el Blob y `ADMIN_ACCESS_KEY`, y
+aplica las migraciones en la base nueva.
+
 ## Dos flujos
 
 - **`index.html` (comprador):** informativo. El comprador elige la cantidad, paga por

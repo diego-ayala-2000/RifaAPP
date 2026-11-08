@@ -1,44 +1,40 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="raffle-loading">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Rifa JMJ Corea 2027</title>
+    <title data-raffle-text="{title}">Rifa</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <main class="container">
       <header class="hero-card">
         <nav class="topbar" aria-label="Navegación principal">
-          <span class="brand-badge">JMJ Corea 2027</span>
+          <span class="brand-badge" data-raffle-text="{shortName}"></span>
           <div class="topbar-links">
             <a class="cta-link" href="#comprar">Comprar rifas</a>
           </div>
         </nav>
 
         <div class="hero-top">
-          <img class="hero-logo" src="content/images.jpeg" alt="Logo JMJ Seúl 2027" />
+          <img class="hero-logo" data-raffle-show="logo" data-raffle-src="logo.src" data-raffle-alt="logo.alt" alt="" />
           <div>
-            <p class="eyebrow">Parroquia San Pedro de Las Condes</p>
-            <h1>Rifa para la Jornada Mundial de la Juventud</h1>
+            <p class="eyebrow" data-raffle-show="organization" data-raffle-text="{organization}"></p>
+            <h1 data-raffle-text="{headline}"></h1>
             <div class="accent-bar"></div>
           </div>
         </div>
 
-        <p class="description">
-          Campaña de recaudación de fondos para la peregrinación de Corea
-        </p>
+        <p class="description" data-raffle-show="description" data-raffle-text="{description}"></p>
 
         <div class="hero-stats" aria-label="Estadísticas de la rifa">
           <div class="stat">
-            <strong>Sorteo a fines de noviembre 2026</strong>
+            <strong data-raffle-text="{draw.title}"></strong>
             <span></span>
-            <small class="stat-note">
-              📍 Presencial en la Parroquia San Pedro de Las Condes, un sábado después de la Eucaristía.
-            </small>
+            <small class="stat-note" data-raffle-show="draw.note" data-raffle-text="{draw.note}"></small>
           </div>
           <div class="stat">
-            <strong>$2.000</strong>
+            <strong data-price-qty="1"></strong>
             <span>por rifa</span>
           </div>
         </div>
@@ -49,25 +45,9 @@
           <h2>Premios disponibles</h2>
         </div>
 
-        <div class="prize-grid">
-          <div class="prize-card prize-card-gold">
-            <span class="prize-medal">🥇</span>
-            <span class="prize-rank">1er premio</span>
-            <p class="prize-name">iPad 11 Wi‑Fi 128GB</p>
-          </div>
-          <div class="prize-card prize-card-silver">
-            <span class="prize-medal">🥈</span>
-            <span class="prize-rank">2do premio</span>
-            <p class="prize-name">Apple AirPods 4</p>
-          </div>
-          <div class="prize-card prize-card-bronze">
-            <span class="prize-medal">🥉</span>
-            <span class="prize-rank">3er premio</span>
-            <p class="prize-name">Okwu Fundamental Brushes Collection</p>
-          </div>
-        </div>
+        <div class="prize-grid" id="prizeGrid" data-raffle-show="prizes"></div>
 
-        <p class="prize-note">🎉 ¡Y muchos premios más que se repartirán el día del sorteo!</p>
+        <p class="prize-note" data-raffle-show="prizeNote" data-raffle-text="{prizeNote}"></p>
       </section>
 
       <section class="card steps-card">
@@ -77,7 +57,7 @@
             <span class="info-number">1</span>
             <span class="info-icon">💳</span>
             <h3>Realiza tu pago</h3>
-            <p>Transfiere el monto exacto o paga en línea con el link de Mercado Pago.</p>
+            <p>Transfiere el monto exacto<span data-raffle-show="mercadoPagoUrl"> o paga en línea con el link de Mercado Pago</span>.</p>
           </div>
           <div class="step-arrow" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -101,37 +81,37 @@
             <input type="radio" name="tickets" value="1" />
             <span class="ticket-qty">1</span>
             <span class="ticket-label">rifa</span>
-            <span class="ticket-price">$2.000</span>
+            <span class="ticket-price" data-price-qty="1"></span>
           </label>
           <label class="ticket-card">
             <input type="radio" name="tickets" value="2" />
             <span class="ticket-qty">2</span>
             <span class="ticket-label">rifas</span>
-            <span class="ticket-price">$4.000</span>
+            <span class="ticket-price" data-price-qty="2"></span>
           </label>
           <label class="ticket-card">
             <input type="radio" name="tickets" value="3" />
             <span class="ticket-qty">3</span>
             <span class="ticket-label">rifas</span>
-            <span class="ticket-price">$6.000</span>
+            <span class="ticket-price" data-price-qty="3"></span>
           </label>
           <label class="ticket-card">
             <input type="radio" name="tickets" value="5" checked />
             <span class="ticket-qty">5</span>
             <span class="ticket-label">rifas</span>
-            <span class="ticket-price">$10.000</span>
+            <span class="ticket-price" data-price-qty="5"></span>
           </label>
           <label class="ticket-card">
             <input type="radio" name="tickets" value="10" />
             <span class="ticket-qty">10</span>
             <span class="ticket-label">rifas</span>
-            <span class="ticket-price">$20.000</span>
+            <span class="ticket-price" data-price-qty="10"></span>
           </label>
           <label class="ticket-card">
             <input type="radio" name="tickets" value="20" />
             <span class="ticket-qty">20</span>
             <span class="ticket-label">rifas</span>
-            <span class="ticket-price">$40.000</span>
+            <span class="ticket-price" data-price-qty="20"></span>
           </label>
         </div>
 
@@ -141,25 +121,26 @@
         </label>
 
         <div class="summary">
-          <p>Precio por rifa: <strong>$2.000</strong></p>
-          <p class="summary-total">Total a pagar: <strong id="totalPrice">$10.000</strong></p>
+          <p>Precio por rifa: <strong data-price-qty="1"></strong></p>
+          <p class="summary-total">Total a pagar: <strong id="totalPrice"></strong></p>
         </div>
       </section>
 
       <section class="card" id="pago">
         <h2>Realiza tu pago</h2>
+        <p class="section-subtitle" id="paymentPending" hidden>Los datos de pago se publicarán pronto.</p>
         <div class="payment-options">
-          <div class="payment-option" id="transferencia">
-            <h3 class="option-title option-title-primary"><span class="option-icon">🏦</span> Opción 1 · Transferencia bancaria</h3>
+          <div class="payment-option" id="transferencia" data-raffle-show="bank">
+            <h3 class="option-title option-title-primary"><span class="option-icon">🏦</span> <span class="option-label">Transferencia bancaria</span></h3>
             <p class="payment-amount-hint">
-              Transfiere <strong id="transferAmount">$10.000</strong> a la siguiente cuenta:
+              Transfiere <strong id="transferAmount"></strong> a la siguiente cuenta:
             </p>
             <div class="transfer-box">
-              <p><strong>Nombre:</strong> <span data-copy-field>Jorge Ayala Marfil</span></p>
-              <p><strong>RUT:</strong> <span data-copy-field>5.868.327-2</span></p>
-              <p><strong>Cuenta corriente:</strong> <span data-copy-field>15782935</span></p>
-              <p><strong>Banco:</strong> <span data-copy-field>BICE</span></p>
-              <p><strong>Correo:</strong> <span data-copy-field>jubileoroma@gmail.com</span></p>
+              <p><strong>Nombre:</strong> <span data-copy-field data-raffle-text="{bank.name}"></span></p>
+              <p><strong>RUT:</strong> <span data-copy-field data-raffle-text="{bank.rut}"></span></p>
+              <p><strong data-raffle-text="{bank.accountType}:"></strong> <span data-copy-field data-raffle-text="{bank.account}"></span></p>
+              <p><strong>Banco:</strong> <span data-copy-field data-raffle-text="{bank.bank}"></span></p>
+              <p data-raffle-show="bank.email"><strong>Correo:</strong> <span data-copy-field data-raffle-text="{bank.email}"></span></p>
               <p class="transfer-comment">
                 ✍️ <strong>Comentario de la transferencia (opcional):</strong> escribe el nombre o las iniciales del vendedor que te ofreció la rifa.
               </p>
@@ -171,14 +152,14 @@
             </div>
           </div>
 
-          <div class="payment-option" id="mercadopago">
-            <h3 class="option-title option-title-secondary"><span class="option-icon">💠</span> Opción 2 · Mercado Pago</h3>
+          <div class="payment-option" id="mercadopago" data-raffle-show="mercadoPagoUrl">
+            <h3 class="option-title option-title-secondary"><span class="option-icon">💠</span> <span class="option-label">Mercado Pago</span></h3>
             <p class="payment-amount-hint">
-              Paga <strong id="mpAmount">$10.000</strong> con el siguiente link seguro de Mercado Pago:
+              Paga <strong id="mpAmount"></strong> con el siguiente link seguro de Mercado Pago:
             </p>
             <a
               class="mp-btn"
-              href="https://link.mercadopago.cl/jmjkoreasanpedro"
+              data-raffle-href="mercadoPagoUrl"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -190,50 +171,68 @@
 
       <section class="card" id="siguiente-paso">
         <h2>Paso 2 · Envía tu comprobante</h2>
-        <p class="section-subtitle">
-          Una vez realizado tu pago (opción 1 o 2), elige a quién va tu aporte. Hay
-          <strong>dos caminos</strong>:
-        </p>
 
-        <div class="payment-options">
-          <div class="payment-option">
-            <h3 class="option-title option-title-primary"><span class="option-icon">🙋</span> Camino 1 · Aporte a un peregrino</h3>
-            <p class="payment-amount-hint">
-              Si te vendió los tickets un peregrino, <strong>reenvíale el comprobante a él o ella</strong>
-              para que pueda asignar tus tickets.
-            </p>
-            <div class="hint-list">
-              <p>📲 Envía la foto o el PDF del comprobante directamente al WhatsApp de tu vendedor.</p>
-              <p>🔢 El vendedor registrará tu compra y te responderá con tus números de rifa.</p>
-              <p>✅ Tu participación queda confirmada cuando el equipo verifica el pago.</p>
+        <!-- Con fondo común: dos caminos (aporte a un vendedor o al fondo común). -->
+        <div data-raffle-show="commonFundWhatsapp">
+          <p class="section-subtitle">
+            Una vez realizado tu pago<span class="payment-choice"></span>, elige a quién va tu aporte. Hay
+            <strong>dos caminos</strong>:
+          </p>
+
+          <div class="payment-options">
+            <div class="payment-option">
+              <h3 class="option-title option-title-primary"><span class="option-icon">🙋</span> <span data-raffle-text="Camino 1 · Aporte a un {sellerNoun}"></span></h3>
+              <p class="payment-amount-hint">
+                Si te vendió los tickets un <span data-raffle-text="{sellerNoun}"></span>, <strong>reenvíale el comprobante a él o ella</strong>
+                para que pueda asignar tus tickets.
+              </p>
+              <div class="hint-list">
+                <p>📲 Envía la foto o el PDF del comprobante directamente al WhatsApp de tu vendedor.</p>
+                <p>🔢 El vendedor registrará tu compra y te responderá con tus números de rifa.</p>
+                <p>✅ Tu participación queda confirmada cuando el equipo verifica el pago.</p>
+              </div>
+            </div>
+
+            <div class="payment-option">
+              <h3 class="option-title option-title-secondary"><span class="option-icon">🤝</span> Camino 2 · Aporte al fondo común</h3>
+              <p class="payment-amount-hint">
+                Si quieres aportar al fondo común y no a un <span data-raffle-text="{sellerNoun}"></span> en específico, envía tu
+                comprobante al siguiente WhatsApp para que te asignemos tus tickets.
+              </p>
+              <a
+                class="wa-btn"
+                id="commonFundLink"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Compra tickets para aportar al fondo común
+              </a>
             </div>
           </div>
+        </div>
 
-          <div class="payment-option">
-            <h3 class="option-title option-title-secondary"><span class="option-icon">🤝</span> Camino 2 · Aporte al fondo común</h3>
-            <p class="payment-amount-hint">
-              Si quieres aportar al fondo común y no a un peregrino en específico, envía tu
-              comprobante al siguiente WhatsApp para que te asignemos tus tickets.
-            </p>
-            <a
-              class="wa-btn"
-              href="https://wa.me/56962466138?text=Hola%2C%20mi%20nombre%20es%3A%20"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Compra tickets para aportar al fondo común
-            </a>
+        <!-- Sin fondo común: un solo camino, el comprobante va al vendedor. -->
+        <div id="singlePath" hidden>
+          <p class="section-subtitle">
+            Una vez realizado tu pago, <strong>reenvía el comprobante a la persona que te vendió la rifa</strong>
+            para que pueda asignar tus tickets.
+          </p>
+          <div class="hint-list">
+            <p>📲 Envía la foto o el PDF del comprobante directamente al WhatsApp de tu vendedor.</p>
+            <p>🔢 El vendedor registrará tu compra y te responderá con tus números de rifa.</p>
+            <p>✅ Tu participación queda confirmada cuando el equipo verifica el pago.</p>
           </div>
         </div>
       </section>
 
     </main>
 
-    <footer class="contact-bar" id="contacto">
+    <footer class="contact-bar" id="contacto" data-raffle-show="contactEmail">
       Cualquier duda o consulta, escribir a
-      <a href="mailto:jubileoroma@gmail.com">jubileoroma@gmail.com</a>
+      <a id="contactLink" data-raffle-text="{contactEmail}"></a>
     </footer>
 
+    <script src="raffle.js"></script>
     <script src="script.js"></script>
   </body>
 </html>

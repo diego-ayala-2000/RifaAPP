@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="raffle-loading">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex, nofollow" />
-    <title>Admin · Rifa JMJ Corea 2027</title>
+    <title data-raffle-text="Admin · {title}">Admin</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <main class="container">
       <header class="hero-card">
         <nav class="topbar" aria-label="Navegación principal">
-          <span class="brand-badge">JMJ Corea 2027 · Admin</span>
+          <span class="brand-badge" data-raffle-text="{shortName} · Admin"></span>
           <div class="topbar-links">
             <a class="cta-link" href="index.html">Volver al sitio</a>
           </div>
@@ -308,14 +308,14 @@
             </label>
 
             <div class="summary">
-              <p>Precio por rifa: <strong>$2.000</strong></p>
-              <p>Total de la venta: <strong id="regTotalPrice">$10.000</strong></p>
+              <p>Precio por rifa: <strong data-price-qty="1"></strong></p>
+              <p>Total de la venta: <strong id="regTotalPrice"></strong></p>
             </div>
 
             <div class="form-grid">
               <label class="full-width">
                 Monto pagado por el comprador
-                <input id="regDepositAmount" type="number" name="depositAmount" min="2000" step="2000" readonly tabindex="-1" required />
+                <input id="regDepositAmount" type="number" name="depositAmount" readonly tabindex="-1" required />
                 <small id="regDepositHint">Se calcula automáticamente según la cantidad de rifas.</small>
               </label>
               <label class="full-width">
@@ -350,6 +350,7 @@
       </section>
     </main>
 
+    <script src="raffle.js"></script>
     <script src="admin.js"></script>
   </body>
 </html>
