@@ -550,6 +550,63 @@ h1 {
 }
 
 
+.prize-count {
+  background: #fdecea;
+  color: var(--primary);
+  font-weight: 800;
+  font-size: 0.85rem;
+  padding: 5px 12px;
+  border-radius: 999px;
+}
+
+.prize-list {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 14px;
+}
+
+.prize-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: linear-gradient(135deg, #fffaf5, #ffffff);
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.prize-item:hover {
+  border-color: rgba(198, 40, 40, 0.35);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(198, 40, 40, 0.08);
+}
+
+.prize-icon {
+  flex: 0 0 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 1.35rem;
+  background: linear-gradient(135deg, #fff1e0, #fde2e2);
+}
+
+.prize-item-name {
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.35;
+}
+
+@media (max-width: 720px) {
+  .prize-list {
+    grid-template-columns: 1fr;
+  }
+}
+
 .prize-note {
   margin: 18px 0 0;
   padding: 14px 18px;

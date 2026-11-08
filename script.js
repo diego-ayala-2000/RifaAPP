@@ -47,13 +47,11 @@ function prizeRank(position) {
   return `${position}° premio`;
 }
 
-function renderPrizes(prizes, ranked) {
-  const grid = document.getElementById('prizeGrid');
-  if (!grid) return;
-
+// Premios con orden: tarjetas de 1er, 2do y 3er premio con medalla.
+function renderPrizeCards(grid, prizes) {
   grid.innerHTML = '';
   prizes.forEach((prize, index) => {
-    const style = (ranked && PRIZE_MEDALS[index]) || { medal: '🎁', className: '' };
+    const style = PRIZE_MEDALS[index] || { medal: '🎁', className: '' };
     const card = document.createElement('div');
     card.className = `prize-card ${style.className}`.trim();
 
@@ -67,12 +65,55 @@ function renderPrizes(prizes, ranked) {
 
     const name = document.createElement('p');
     name.className = 'prize-name';
-    name.textContent = prize;
+    name.textContent = prize.name;
 
-    if (ranked) card.append(medal, rank, name);
-    else card.append(medal, name);
+    card.append(medal, rank, name);
     grid.append(card);
   });
+}
+
+// Premios sin orden: lista con un ícono por premio.
+function renderPrizeList(list, prizes) {
+  list.innerHTML = '';
+  prizes.forEach((prize) => {
+    const item = document.createElement('li');
+    item.className = 'prize-item';
+
+    const icon = document.createElement('span');
+    icon.className = 'prize-icon';
+    icon.setAttribute('aria-hidden', 'true');
+    icon.textContent = prize.icon || '🎁';
+
+    const name = document.createElement('span');
+    name.className = 'prize-item-name';
+    name.textContent = prize.name;
+
+    item.append(icon, name);
+    list.append(item);
+  });
+}
+
+// Cada premio puede venir como texto o como { name, icon }.
+function renderPrizes(rawPrizes, ranked) {
+  const grid = document.getElementById('prizeGrid');
+  const list = document.getElementById('prizeList');
+  const count = document.getElementById('prizeCount');
+  const prizes = rawPrizes.map((prize) => (typeof prize === 'string' ? { name: prize } : prize));
+
+  if (grid) {
+    grid.hidden = !ranked || prizes.length === 0;
+    if (ranked) renderPrizeCards(grid, prizes);
+  }
+
+  if (list) {
+    list.hidden = ranked || prizes.length === 0;
+    if (!ranked) renderPrizeList(list, prizes);
+  }
+
+  if (count) {
+    count.hidden = ranked || prizes.length === 0;
+    count.textContent = `${prizes.length} ${prizes.length === 1 ? 'premio' : 'premios'}`;
+  }
 }
 
 // Numera las opciones de pago visibles ("Opción 1 · ...") solo si hay más de una.
