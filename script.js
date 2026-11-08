@@ -47,13 +47,13 @@ function prizeRank(position) {
   return `${position}° premio`;
 }
 
-function renderPrizes(prizes) {
+function renderPrizes(prizes, ranked) {
   const grid = document.getElementById('prizeGrid');
   if (!grid) return;
 
   grid.innerHTML = '';
   prizes.forEach((prize, index) => {
-    const style = PRIZE_MEDALS[index] || { medal: '🎁', className: '' };
+    const style = (ranked && PRIZE_MEDALS[index]) || { medal: '🎁', className: '' };
     const card = document.createElement('div');
     card.className = `prize-card ${style.className}`.trim();
 
@@ -69,7 +69,8 @@ function renderPrizes(prizes) {
     name.className = 'prize-name';
     name.textContent = prize;
 
-    card.append(medal, rank, name);
+    if (ranked) card.append(medal, rank, name);
+    else card.append(medal, name);
     grid.append(card);
   });
 }
@@ -97,7 +98,7 @@ function labelPaymentOptions() {
 
 function applyRaffle(raffle) {
   pricePerTicket = raffle.price;
-  renderPrizes(raffle.prizes || []);
+  renderPrizes(raffle.prizes || [], raffle.prizesRanked !== false);
   labelPaymentOptions();
 
   const commonFundLink = document.getElementById('commonFundLink');
