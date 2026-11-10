@@ -403,6 +403,13 @@ function renderTransactions(rows) {
   });
 }
 
+// "12345678-5" → "12.345.678-5"
+function formatRut(rut) {
+  if (!rut) return '';
+  const [body, dv] = String(rut).split('-');
+  return `${Number(body).toLocaleString('es-CL')}-${dv}`;
+}
+
 function sellerLink(token) {
   return `${location.origin}/vendedor.html?t=${encodeURIComponent(token)}`;
 }
@@ -414,7 +421,10 @@ function renderSellers(rows) {
     const link = sellerLink(row.token);
     return `
     <tr>
-      <td><strong>${escapeHtml(row.name)}</strong></td>
+      <td>
+        <strong>${escapeHtml(row.name)}</strong>
+        ${row.phone || row.rut ? `<br /><span class="muted-text">${escapeHtml([row.phone, formatRut(row.rut)].filter(Boolean).join(' · '))}</span>` : ''}
+      </td>
       <td>
         <div class="link-cell">
           <code class="seller-link">${escapeHtml(link)}</code>

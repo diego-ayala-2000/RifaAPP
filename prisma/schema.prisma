@@ -21,6 +21,9 @@ model Vendor {
   id           Int           @id @default(autoincrement())
   name         String        @unique
   token        String        @unique
+  // Solo vendedores inscritos en inscripcion.html: con teléfono y RUT recuperan su enlace.
+  phone        String?       @unique
+  rut          String?       @unique
   createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
   transactions Transaction[]
 

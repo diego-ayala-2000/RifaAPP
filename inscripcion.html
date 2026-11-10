@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es" class="raffle-loading">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title data-raffle-text="Vendedores · {title}">Vendedores</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <header class="hero-card">
+        <nav class="topbar" aria-label="Navegación principal">
+          <span class="brand-badge" data-raffle-text="{shortName} · Vendedores"></span>
+          <div class="topbar-links">
+            <a class="cta-link" href="index.html">Volver al sitio</a>
+          </div>
+        </nav>
+
+        <div class="hero-top">
+          <img class="hero-logo" data-raffle-show="logo" data-raffle-src="logo.src" data-raffle-alt="logo.alt" alt="" />
+          <div>
+            <p class="eyebrow" data-raffle-show="organization" data-raffle-text="{organization}"></p>
+            <h1>Tu enlace de vendedor</h1>
+            <div class="accent-bar"></div>
+          </div>
+        </div>
+
+        <p class="description">
+          Con tu enlace personal registras las rifas que vendes. Inscríbete una sola vez y,
+          si lo pierdes, recupéralo aquí con tu teléfono y RUT.
+        </p>
+      </header>
+
+      <section class="card" id="signupDisabled" hidden>
+        <h2>Inscripción no disponible</h2>
+        <p class="section-subtitle">
+          En esta rifa los enlaces de vendedor los entrega coordinación. Pídele el tuyo.
+        </p>
+      </section>
+
+      <section class="card" id="signupPanel" hidden>
+        <div class="tabs" role="tablist">
+          <button type="button" class="tab-btn active" data-tab="signup" role="tab">Inscribirme por primera vez</button>
+          <button type="button" class="tab-btn" data-tab="recover" role="tab">Ya estoy inscrito</button>
+        </div>
+
+        <form id="signupForm">
+          <h2>Inscríbete como vendedor</h2>
+          <p class="section-subtitle">Completa tus datos una sola vez. Al terminar verás tu enlace personal.</p>
+          <div class="form-grid">
+            <label class="full-width">
+              Nombre completo
+              <input type="text" name="name" autocomplete="name" placeholder="Ej. Ana María López Rojas" required />
+            </label>
+            <label>
+              Teléfono / WhatsApp
+              <input type="tel" name="phone" inputmode="numeric" autocomplete="tel" placeholder="912345678" required />
+              <small><strong>9 dígitos</strong>, sin el +56.</small>
+            </label>
+            <label>
+              RUT
+              <input type="text" name="rut" autocomplete="off" placeholder="12.345.678-5" required />
+              <small>Con dígito verificador.</small>
+            </label>
+          </div>
+          <button type="submit">Inscribirme y obtener mi enlace</button>
+        </form>
+
+        <form id="recoverForm" hidden>
+          <h2>Recupera tu enlace</h2>
+          <p class="section-subtitle">Ingresa el teléfono y el RUT con los que te inscribiste.</p>
+          <div class="form-grid">
+            <label>
+              Teléfono / WhatsApp
+              <input type="tel" name="phone" inputmode="numeric" autocomplete="tel" placeholder="912345678" required />
+              <small><strong>9 dígitos</strong>, sin el +56.</small>
+            </label>
+            <label>
+              RUT
+              <input type="text" name="rut" autocomplete="off" placeholder="12.345.678-5" required />
+              <small>Con dígito verificador.</small>
+            </label>
+          </div>
+          <button type="submit">Obtener mi enlace</button>
+        </form>
+
+        <div id="message" class="message" aria-live="polite"></div>
+
+        <div id="resultPanel" class="result-panel" hidden>
+          <h3 id="resultTitle">✅ Este es tu enlace</h3>
+          <p id="resultText"></p>
+          <code class="seller-link" id="sellerLink"></code>
+          <div class="result-actions">
+            <a class="copy-btn link-btn" id="openLink" href="#">Abrir mi portal de ventas</a>
+            <button type="button" class="copy-btn" id="copyLinkBtn">Copiar enlace</button>
+            <span id="copyFeedback" class="copy-feedback" aria-live="polite"></span>
+          </div>
+          <p class="muted-text">
+            🔒 Este enlace es personal: guárdalo (por ejemplo, envíatelo por WhatsApp) y no
+            lo compartas. Quien lo tenga puede registrar ventas a tu nombre.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <script src="raffle.js"></script>
+    <script src="inscripcion.js"></script>
+  </body>
+</html>

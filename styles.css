@@ -1374,6 +1374,20 @@ button:hover {
   resize: vertical;
 }
 
+.link-btn {
+  display: inline-block;
+  text-decoration: none;
+}
+
+#resultPanel .seller-link {
+  display: block;
+  max-width: none;
+  white-space: normal;
+  word-break: break-all;
+  padding: 10px 12px;
+  margin: 6px 0 4px;
+}
+
 .result-actions {
   display: flex;
   align-items: center;
