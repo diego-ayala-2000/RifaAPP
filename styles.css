@@ -1452,3 +1452,31 @@ button:hover {
     text-align: left;
   }
 }
+
+/* inscripcion.html · ¿Cómo se vende? */
+.sell-steps h3 {
+  margin: 0 0 6px;
+}
+
+.sell-steps p {
+  margin: 0;
+}
+
+.sell-tips {
+  margin: 18px 0 0;
+  padding: 14px 18px;
+  list-style: none;
+  border: 1px dashed var(--border);
+  border-radius: 14px;
+  background: #fffdfb;
+}
+
+.sell-tips li {
+  margin: 6px 0;
+  line-height: 1.45;
+}
+
+.hero-card .description a {
+  color: inherit;
+  font-weight: 700;
+}

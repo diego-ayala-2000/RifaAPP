@@ -123,5 +123,6 @@ copyLinkBtn.addEventListener('click', async () => {
 
 window.raffleReady.then((raffle) => {
   signupPanel.hidden = !raffle.sellerSignup;
+  document.getElementById('howToSell').hidden = !raffle.sellerSignup;
   signupDisabled.hidden = Boolean(raffle.sellerSignup);
 });
