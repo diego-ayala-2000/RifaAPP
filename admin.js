@@ -520,7 +520,7 @@ function regBuildMessage({ name, sellerName, quantity, amount, numbers, history 
 
   msg +=
     `Guarda este mensaje. Tu participación se confirma una vez verificado el pago.` +
-    `${DRAW_WHEN ? ` El sorteo será en ${DRAW_WHEN}.` : ''}\n\n` +
+    `${DRAW_WHEN ? ` El sorteo será ${DRAW_WHEN}.` : ''}\n\n` +
     `¡Mucha suerte! 🍀`;
 
   return msg;

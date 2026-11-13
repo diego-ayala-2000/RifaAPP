@@ -274,7 +274,7 @@ function buildTicketPdf({ name, email, phone, seller, quantity, amount, numbers,
   doc.setFontSize(7);
   doc.setTextColor(110);
   const footer = doc.splitTextToSize(
-    `Tu participación se confirma una vez verificado el pago.${DRAW_WHEN ? ` El sorteo será en ${DRAW_WHEN}.` : ''} ¡Mucha suerte!`,
+    `Tu participación se confirma una vez verificado el pago.${DRAW_WHEN ? ` El sorteo será ${DRAW_WHEN}.` : ''} ¡Mucha suerte!`,
     contentWidth
   );
   footer.forEach((footerLine) => {
